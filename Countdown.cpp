@@ -12,15 +12,13 @@ ACountdown::ACountdown()
 	CountdownTime = 60;
 	bStartGame = false;
 	bGoNextGame = false;
-	CountdownForThreeSeconds = 3.0f;
+	CountdownBeforeStartAfterEnd = 3;
 }
 
 // Called when the game starts or when spawned
 void ACountdown::BeginPlay()
 {
-	Super::BeginPlay();
-	
-	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &ACountdown::CountdownTimer, 1.0f, true);
+	Super::BeginPlay();	
 }
 
 // Called every frame
@@ -36,16 +34,24 @@ void ACountdown::CountdownTimer()
 	{
 		CountdownTime--;
 		if (CountdownTime <= 0)
-		{
-			GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
-		}
+			StopCountdownTimer();
 	}
+}
+
+void ACountdown::StartCountdownTimer()
+{
+	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &ACountdown::CountdownTimer, 1.0f, true);
+}
+
+void ACountdown::StopCountdownTimer()
+{
+	GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
 }
 
 void ACountdown::TimerBeforeStart()
 {
-	CountdownForThreeSeconds--;
-	if (CountdownForThreeSeconds < 0)
+	CountdownBeforeStartAfterEnd--;
+	if (CountdownBeforeStartAfterEnd < 0)
 	{
 		StopCountdownBeforeStart();
 	}
@@ -53,20 +59,20 @@ void ACountdown::TimerBeforeStart()
 
 void ACountdown::StartCountdownBeforeStart()
 {
-	CountdownForThreeSeconds = 3.0f;
-	GetWorldTimerManager().SetTimer(TimerHandleForThreeSeconds, this, &ACountdown::TimerBeforeStart, 1.0f, true);
+	CountdownBeforeStartAfterEnd = 3;
+	GetWorldTimerManager().SetTimer(TimerHandleBeforeStartAfterEnd, this, &ACountdown::TimerBeforeStart, 1.0f, true);
 }
 
 void ACountdown::StopCountdownBeforeStart()
 {
-	GetWorldTimerManager().ClearTimer(TimerHandleForThreeSeconds);
+	GetWorldTimerManager().ClearTimer(TimerHandleBeforeStartAfterEnd);
 	bStartGame = true;
 }
 
 void ACountdown::TimerAfterEnd()
 {
-	CountdownForThreeSeconds--;
-	if (CountdownForThreeSeconds <= 0)
+	CountdownBeforeStartAfterEnd--;
+	if (CountdownBeforeStartAfterEnd <= 0)
 	{
 		StopCountdownAfterEnd();
 	}
@@ -74,12 +80,12 @@ void ACountdown::TimerAfterEnd()
 
 void ACountdown::StartCountdownAfterEnd()
 {
-	CountdownForThreeSeconds = 3.0f;
-	GetWorldTimerManager().SetTimer(TimerHandleForThreeSeconds, this, &ACountdown::TimerAfterEnd, 1.0f, true);
+	CountdownBeforeStartAfterEnd = 3;
+	GetWorldTimerManager().SetTimer(TimerHandleBeforeStartAfterEnd, this, &ACountdown::TimerAfterEnd, 1.0f, true);
 }
 
 void ACountdown::StopCountdownAfterEnd()
 {
-	GetWorldTimerManager().ClearTimer(TimerHandleForThreeSeconds);
+	GetWorldTimerManager().ClearTimer(TimerHandleBeforeStartAfterEnd);
 	bGoNextGame = true;
 }

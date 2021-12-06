@@ -27,6 +27,15 @@ TSubclassOf<APawn> AtekkenGameModeBase::GetCharacterClass(ECharacters CharacterT
 	return Characters[CharacterToSpawn];
 }
 
+/*APawn* AtekkenGameModeBase::SpawnCharacter(ECharacters CharacterToSpawn, FTransform CharacterSpawnTransform)
+{
+	const TSubclassOf<APawn> SpawnClass = Characters[CharacterToSpawn];
+	//GetWorld()->SpawnActor(Characters[CharacterToSpawn], NAME_None, CharacterSpawnTransform.GetLocation(), CharacterSpawnTransform.GetRotation());
+	//GetWorld()->SpawnActor<SpawnClass>(CharacterSpawnTransform.GetLocation(), CharacterSpawnTransform.GetRotation().Rotator());
+	AMyCharacter* SpawnedCharacter = Cast<SpawnClass>(GetWorld()->SpawnActor<SpawnClass>(CharacterSpawnTransform.GetLocation(), CharacterSpawnTransform.GetRotation().Rotator()));
+	return SpawnedCharacter;
+}*/
+
 void AtekkenGameModeBase::ChangeWidget(TSubclassOf<UUserWidget> NewWidget)
 {
 	ClearWidget();

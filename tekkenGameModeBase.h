@@ -21,6 +21,8 @@ protected:
 
 public:
 
+	// 캐릭터 스폰 관련
+
 	// 게임의 모든 캐릭터를 맵으로 저장. 블루프린트에서 각 캐릭터 아이디에 맞게 캐릭터 직접 설정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Characters")
 		TMap<ECharacters, TSubclassOf<APawn>> Characters;
@@ -29,9 +31,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Characters")
 		TSubclassOf<APawn> GetCharacterClass(ECharacters CharacterToSpawn);
 
-	// 화면에 선택된 캐릭터 스폰. 블루프린트에서 정의
+	// 화면에 선택된 캐릭터를 정해진 위치에 스폰하는 함수. 블루프린트에서 정의
 	UFUNCTION(BlueprintImplementableEvent, Category = "Characters")
-		void SpawnCharacter(ECharacters CharacterToSpawn, APawn*& CurrentDisplayedCharacter);
+		void SpawnCharacter(ECharacters CharacterToSpawn, FTransform CharacterSpawnTransform, APawn*& CurrentDisplayedCharacter);
+	//UFUNCTION()
+	//	APawn* SpawnCharacter(ECharacters CharacterToSpawn, FTransform CharacterSpawnTransform);
+
+
+
+	// 위젯 관련
 
 	// 화면에 표시된 위젯 전부 삭제 후 위젯 추가
 	UFUNCTION(BlueprintCallable, Category = "Widget")
@@ -56,6 +64,10 @@ public:
 	// 현재 화면에 표시되고 있는 메뉴 위젯 TArray
 	UPROPERTY()
 		TArray<UUserWidget*> CurrentWidgets;
+
+
+
+	// 레벨 관련
 
 	// 레벨 이동
 	UFUNCTION(BlueprintCallable, Category = "TransferLevel")

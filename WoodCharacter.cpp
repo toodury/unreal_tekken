@@ -9,9 +9,6 @@ AWoodCharacter::AWoodCharacter()
 	// 나머지 왼손, 왼발, 오른발은 블루프린트에서 삭제
 	RightHandSocketName = FName(TEXT("Bone004"));
 
-	// 오른손의 Sphere Collision Component를 매쉬에 Attach
-	AttachCollisionComponentsToMesh();
-
 	// Character Detail 변수 초기화
 	InitializeCharacterDetail();
 
@@ -20,6 +17,9 @@ AWoodCharacter::AWoodCharacter()
 
 	// Hit Table 초기화
 	InitializeHitTable();
+
+	// 각 캐릭터 클래스 생성자에서 필수적으로 실행해야 할 함수 모음
+	CharacterClassCommonConstructor();
 }
 
 void AWoodCharacter::InitializeCharacterDetail()

@@ -2,11 +2,3 @@
 
 
 #include "CharacterEnumClasses.h"
-
-CharacterEnumClasses::CharacterEnumClasses()
-{
-}
-
-CharacterEnumClasses::~CharacterEnumClasses()
-{
-}

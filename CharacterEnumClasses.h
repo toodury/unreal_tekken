@@ -76,7 +76,5 @@ enum class ECharacters : uint8 {
 
 class TEKKEN_API CharacterEnumClasses
 {
-public:
-	CharacterEnumClasses();
-	~CharacterEnumClasses();
+		
 };

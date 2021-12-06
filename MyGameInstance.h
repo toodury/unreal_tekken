@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "Countdown.h"
 #include "CharacterEnumClasses.h"
+#include "MyCharacter.h"
 #include "MyGameInstance.generated.h"
 
 /**
@@ -26,11 +27,11 @@ public:
 
 	// 플레이어 캐릭터
 	UPROPERTY()
-		ACharacter* PlayerCharacter;
+		AMyCharacter* PlayerCharacter;
 
 	// 컴퓨터 캐릭터
 	UPROPERTY()
-		ACharacter* ComputerCharacter;
+		AMyCharacter* ComputerCharacter;
 
 	// 플레이어 닉네임
 	UPROPERTY()
@@ -44,9 +45,13 @@ public:
 	UPROPERTY()
 		int8 ComputerWinCnt;
 
+	// 최고 레벨
+	UPROPERTY()
+		int8 MaxLevel;
+
 	// 현재 레벨
 	UPROPERTY()
-		int8 Level;
+		int8 CurrentLevel;
 
 	// 시간을 재기 위한 Countdown 액터
 	UPROPERTY()

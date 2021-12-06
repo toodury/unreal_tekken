@@ -5,11 +5,11 @@
 #include "Internationalization/Text.h"
 #include "Kismet/GameplayStatics.h"
 #include "RandomCharacter.h"
+#include "Components/CanvasPanel.h"
 
 #include <random>
 
-UGameStartMenu::UGameStartMenu(const FObjectInitializer& ObjectInitializer)
-	: UUserWidget(ObjectInitializer)
+void UGameStartMenu::NativeConstruct()
 {
 	// 로컬 변수 초기화
 
@@ -31,7 +31,6 @@ UGameStartMenu::UGameStartMenu(const FObjectInitializer& ObjectInitializer)
 
 	// 캐릭터 선택 버튼들과 Border 관련 초기화
 	InitializeCharacterSelectButtonsAndBorders();
-
 }
 
 void UGameStartMenu::InitializePlayerNicknameInputTextBox()
@@ -150,9 +149,11 @@ void UGameStartMenu::InitializeBackButton()
 
 void UGameStartMenu::BackButtonClicked()
 {
+	// 현재 선택되어 있던 캐릭터가 있다면 화면에서 제거
 	if (CurrentDisplayedCharacter)
 		CurrentDisplayedCharacter->Destroy();
 
+	// 메인 메뉴로 돌아감
 	if (GameMode)
 		GameMode->ChangeWidget(GameMode->StartingWidget);
 }
@@ -221,7 +222,19 @@ void UGameStartMenu::AnyCharacterSelected(ECharacters SelectedCharacter)
 	// 선택된 캐릭터 스폰
 	if (GameMode)
 	{
-		GameMode->SpawnCharacter(SelectedCharacter, CurrentDisplayedCharacter);
+		FTransform CharacterSpawnTransform;
+		if (SelectedCharacter == ECharacters::Random)
+		{
+			CharacterSpawnTransform.SetLocation(FVector(294.0f, 182.0f, 160.0f));
+			CharacterSpawnTransform.SetRotation(FQuat::MakeFromEuler(FVector(0.0f, 0.0f, -180.0f)));
+		}
+		else
+		{
+			CharacterSpawnTransform.SetLocation(FVector(294.0f, 182.0f, 98.0f));
+			CharacterSpawnTransform.SetRotation(FQuat::MakeFromEuler(FVector(0.0f, 0.0f, 180.0f)));
+		}
+		//GameMode->SpawnCharacter(SelectedCharacter, CharacterSpawnTransform);
+		GameMode->SpawnCharacter(SelectedCharacter, CharacterSpawnTransform, CurrentDisplayedCharacter);
 	}
 
 	// 플레이 버튼 활성화

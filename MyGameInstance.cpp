@@ -9,6 +9,7 @@ UMyGameInstance::UMyGameInstance()
 	ComputerCharacter = nullptr;
 	PlayerWinCnt = 0;
 	ComputerWinCnt = 0;
-	Level = 1;
+	MaxLevel = static_cast<int8>(ECharacters::Random);
+	CurrentLevel = 1;
 	CountdownActor = nullptr;
 }

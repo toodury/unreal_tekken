@@ -24,17 +24,40 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// 게임 진행 60초
+
 	// 게임 진행 60초 카운트를 위한 변수
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Countdown")
-		int32 CountdownTime;
-	FTimerHandle CountdownTimerHandle;
-	void CountdownTimer();
+	//UPROPERTY(BlueprintReadOnly, Category = "Countdown")
+	UPROPERTY()
+		int8 CountdownTime;
+
+	// 게임 진행 60초 카운트를 위한 타이머 핸들러
+	UPROPERTY()
+		FTimerHandle CountdownTimerHandle;
+
+	// 게임 진행 60초 타이머 함수
+	UFUNCTION()
+		void CountdownTimer();
+
+	// 게임 진행 60초 타이머 시작 함수
+	UFUNCTION()
+		void StartCountdownTimer();
+
+	// 게임 진행 60초 타이머 종료 함수
+	UFUNCTION()
+		void StopCountdownTimer();
+
+
+
+	// 게임 시작 전과 게임이 끝난 이후 3초
 
 	// 게임 앞뒤 3초 대기를 위한 변수
-	UPROPERTY(BlueprintReadOnly, Category = "Countdown")
-		int32 CountdownForThreeSeconds;
+//	UPROPERTY(BlueprintReadOnly, Category = "Countdown")
+	UPROPERTY()
+		int8 CountdownBeforeStartAfterEnd;
 	// 타이머 핸들러
-	FTimerHandle TimerHandleForThreeSeconds;
+	UPROPERTY()
+		FTimerHandle TimerHandleBeforeStartAfterEnd;
 
 	// Before Start
 	// 3초가 지나고 게임 시작을 의미하는 bool 변수

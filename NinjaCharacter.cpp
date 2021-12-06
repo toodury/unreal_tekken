@@ -11,9 +11,6 @@ ANinjaCharacter::ANinjaCharacter()
 	LeftFootSocketName = FName(TEXT("foot_l"));
 	RightFootSocketName = FName(TEXT("foot_r"));
 
-	// 좌우 손발의 Sphere Collision Component를 매쉬에 Attach
-	AttachCollisionComponentsToMesh();
-
 	// Character Detail 변수 초기화
 	InitializeCharacterDetail();
 
@@ -22,6 +19,9 @@ ANinjaCharacter::ANinjaCharacter()
 
 	// Hit Table 초기화
 	InitializeHitTable();
+
+	// 각 캐릭터 클래스 생성자에서 필수적으로 실행해야 할 함수 모음
+	CharacterClassCommonConstructor();
 }
 
 void ANinjaCharacter::InitializeCharacterDetail()

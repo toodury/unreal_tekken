@@ -5,8 +5,11 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "CharacterAIController.h"
 #include "BTTask_Attack.h"
+#include "Kismet/GameplayStatics.h"
 
 #include <random>
+
+TMap<ECharacters, FName> AMyCharacter::CharacterNameMap;
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -14,7 +17,6 @@ AMyCharacter::AMyCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// 각종 변수 초기화
 
 	// Sphere Collision Component의 소켓 이름 초기화
 	LeftHandSocketName = FName(TEXT("None"));
@@ -23,7 +25,7 @@ AMyCharacter::AMyCharacter()
 	RightFootSocketName = FName(TEXT("None"));
 
 	// Hp 변수 초기화
-	MaxHp = 100.0f;
+	MaxHp = 100;
 	CurrentHp = MaxHp;
 	bGameOver = false;
 	bIsDead = false;
@@ -112,6 +114,15 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AMyCharacter::StartJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AMyCharacter::StopJump);
+}
+
+void AMyCharacter::CharacterClassCommonConstructor()
+{
+	// 해시 테이블에 캐릭터 이름 추가
+	CharacterNameMap.Emplace(CharacterID, CharacterName);
+
+	// 좌우 손발의 Sphere Collision Component를 매쉬에 Attach
+	AttachCollisionComponentsToMesh();
 }
 
 void AMyCharacter::InitializeCharacterDetail()
@@ -210,14 +221,13 @@ void AMyCharacter::OnSphereCollisionComponentBeginOverlap(UPrimitiveComponent* O
 	// 2. 해당 콜리전 컴포넌트의 파티클 시스템 활성화
 	AMyCharacter* OtherCharacter = Cast<AMyCharacter>(OtherActor);
 	
-	if (OtherCharacter->GetCapsuleComponent() == OtherComp && OverlappedComp == AttakMotionCollisionComponentTable[CurrentAttackMotion] && OtherCharacter != this)
+	if (OtherCharacter)
 	{
-		if (GEngine)
+		/*if (OtherCharacter->GetCapsuleComponent() == OtherComp && OverlappedComp == AttakMotionCollisionComponentTable[CurrentAttackMotion] && OtherCharacter != this)
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%s"), CurrentAttackMotion));
-		}
-		OtherCharacter->UpdateHpLeft(-AttackMotionDamageTable[CurrentAttackMotion]);
-		Cast<UParticleSystemComponent>((OverlappedComp->GetAttachChildren())[0])->Activate(true);
+			OtherCharacter->UpdateHpLeft(-AttackMotionDamageTable[CurrentAttackMotion]);
+			Cast<UParticleSystemComponent>((OverlappedComp->GetAttachChildren())[0])->Activate(true);
+		}*/
 	}
 }
 
@@ -245,11 +255,14 @@ void AMyCharacter::InitializeParticleSystemComponents()
 	if (LeftHandCollision)
 	{
 		LeftHandParticleSystem = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LeftHandParticleSystem"));
-		LeftHandParticleSystem->SetupAttachment(LeftHandCollision);
-		LeftHandParticleSystem->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		LeftHandParticleSystem->SetVisibility(true);
-		LeftHandParticleSystem->SetHiddenInGame(false);
-		LeftHandParticleSystem->SetAutoActivate(false);
+		if (LeftHandParticleSystem)
+		{
+			LeftHandParticleSystem->SetupAttachment(LeftHandCollision);
+			LeftHandParticleSystem->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+			LeftHandParticleSystem->SetVisibility(true);
+			LeftHandParticleSystem->SetHiddenInGame(false);
+			LeftHandParticleSystem->SetAutoActivate(false);
+		}
 	}
 
 	if (RightHandCollision)
@@ -286,11 +299,15 @@ void AMyCharacter::InitializeParticleSystemComponents()
 void AMyCharacter::OnCapsuleComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto OtherCharacter = Cast<AMyCharacter>(OtherActor);
-	FString AttckMotion = OtherCharacter->CurrentAttackMotion;	// 상대 캐릭터의 공격 모션
 
-	if (OtherCharacter != this && OtherComp == OtherCharacter->AttakMotionCollisionComponentTable[AttckMotion])
+	if (OtherCharacter)
 	{
-		HitPositionBoolTable[AttackMotionHitPositionTable[AttckMotion]] = true;
+		FString AttckMotion = OtherCharacter->CurrentAttackMotion;	// 상대 캐릭터의 공격 모션
+
+		/*if (OtherCharacter != this && OtherComp == OtherCharacter->AttakMotionCollisionComponentTable[AttckMotion])
+		{
+			HitPositionBoolTable[AttackMotionHitPositionTable[AttckMotion]] = true;
+		}*/
 	}
 }
 
@@ -333,7 +350,7 @@ float AMyCharacter::GetAttackMotionDamageTable(FString AttackMotion)
 		return 0.0f;
 }
 
-void AMyCharacter::UpdateHpLeft(float HpDiff)
+void AMyCharacter::UpdateHpLeft(int32 HpDiff)
 {
 	if (!bGameOver)
 	{

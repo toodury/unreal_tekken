@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -21,98 +21,99 @@ class TEKKEN_API UGameStartMenu : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UGameStartMenu(const FObjectInitializer& ObjectInitializer);
+	// ìƒì„±ì
+	virtual void NativeConstruct() override;
 
-	// ÀÌ À§Á¬ ³»ºÎ¿¡¼­ ¾²ÀÏ ·ÎÄÃ º¯¼öµé
+	// ì´ ìœ„ì ¯ ë‚´ë¶€ì—ì„œ ì“°ì¼ ë¡œì»¬ ë³€ìˆ˜ë“¤
 
-	// °ÔÀÓ ¸ğµå
+	// ê²Œì„ ëª¨ë“œ
 	UPROPERTY()
 		AtekkenGameModeBase* GameMode;
 
-	// °ÔÀÓ ÀÎ½ºÅÏ½º
+	// ê²Œì„ ì¸ìŠ¤í„´ìŠ¤
 	UPROPERTY()
 		UMyGameInstance* GameInstance;
 
-	// ÇöÀç ½ºÆùµÇ¾î ÀÖ´Â Ä³¸¯ÅÍ
+	// í˜„ì¬ ìŠ¤í°ë˜ì–´ ìˆëŠ” ìºë¦­í„°
 	UPROPERTY()
 		APawn* CurrentDisplayedCharacter;
 
 
 
 
-	// ¹ÙÀÎµùµÉ UI À§Á¬ Ç×¸ñµé°ú °ü·Ã ÇÔ¼ö, º¯¼öµé
+	// ë°”ì¸ë”©ë  UI ìœ„ì ¯ í•­ëª©ë“¤ê³¼ ê´€ë ¨ í•¨ìˆ˜, ë³€ìˆ˜ë“¤
 
-	// 1. ´Ğ³×ÀÓ ÀÔ·Â Editable Text Box
+	// 1. ë‹‰ë„¤ì„ ì…ë ¥ Editable Text Box
 
-	// ´Ğ³×ÀÓÀ» ÀÔ·ÂÇÏ´Â ÅØ½ºÆ® ¹Ú½º
+	// ë‹‰ë„¤ì„ì„ ì…ë ¥í•˜ëŠ” í…ìŠ¤íŠ¸ ë°•ìŠ¤
 	UPROPERTY(meta = (BindWidget))
 		UEditableTextBox* PlayerNicknameInputTextBox;
 
-	// ´Ğ³×ÀÓ ÀÔ·Â Editable Text Box °ü·Ã ÃÊ±âÈ­ ÇÔ¼ö
+	// ë‹‰ë„¤ì„ ì…ë ¥ Editable Text Box ê´€ë ¨ ì´ˆê¸°í™” í•¨ìˆ˜
 	UFUNCTION()
 		void InitializePlayerNicknameInputTextBox();
 
-	// ´Ğ³×ÀÓ ÀÔ·ÂÀÌ À¯È¿ÇÑÁö Ç¥½ÃÇÏ´Â bool º¯¼ö. °ø¹éÀÌ Æ÷ÇÔµÇ¾î ÀÖÀ» °æ¿ì true
+	// ë‹‰ë„¤ì„ ì…ë ¥ì´ ìœ íš¨í•œì§€ í‘œì‹œí•˜ëŠ” bool ë³€ìˆ˜. ê³µë°±ì´ í¬í•¨ë˜ì–´ ìˆì„ ê²½ìš° true
 	UPROPERTY()
 		bool bNicknameInvalid;
 
-	// ÇÃ·¹ÀÌ¾î ´Ğ³×ÀÓ¿¡¼­ µé¾î°¡¸é ¾È µÉ ¹®ÀÚ ¸ğÀ½
+	// í”Œë ˆì´ì–´ ë‹‰ë„¤ì„ì—ì„œ ë“¤ì–´ê°€ë©´ ì•ˆ ë  ë¬¸ì ëª¨ìŒ
 	UPROPERTY()
 		TArray<FString> InvalidNicknameArray;
 
-	// ÇÃ·¹ÀÌ¾î ´Ğ³×ÀÓ À¯È¿¼º °Ë»ç
+	// í”Œë ˆì´ì–´ ë‹‰ë„¤ì„ ìœ íš¨ì„± ê²€ì‚¬
 	UFUNCTION(BlueprintCallable, Category = "PlayerNickname")
 		bool IsNicknameValid(FString Nickname);
 
-	// À¯Àú°¡ ÀÔ·ÂÇÑ ´Ğ³×ÀÓÀ» ÀÓ½Ã ÀúÀåÇÏ±â À§ÇÑ ¹®ÀÚ¿­ º¯¼ö
+	// ìœ ì €ê°€ ì…ë ¥í•œ ë‹‰ë„¤ì„ì„ ì„ì‹œ ì €ì¥í•˜ê¸° ìœ„í•œ ë¬¸ìì—´ ë³€ìˆ˜
 	UPROPERTY()
 		FString PlayerNicknameOnChange;
 
-	// ´Ğ³×ÀÓÀ» ÀÔ·ÂÇÏ´Â ÅØ½ºÆ® ¹Ú½º¿¡ ¹®ÀÚ°¡ ÀÔ·ÂµÉ ¶§¸¶´Ù ½ÇÇàµÉ ÇÔ¼ö
-	UFUNCTION()
+	// ë‹‰ë„¤ì„ì„ ì…ë ¥í•˜ëŠ” í…ìŠ¤íŠ¸ ë°•ìŠ¤ì— ë¬¸ìê°€ ì…ë ¥ë  ë•Œë§ˆë‹¤ ì‹¤í–‰ë  í•¨ìˆ˜
+	UFUNCTION(BlueprintCallable, Category = "GameStartMenu")
 		void PlayerNicknameInputTextBoxOnChange(const FText& Text);
 
-	//// ´Ğ³×ÀÓÀ» ÀÔ·ÂÇÏ´Â ÅØ½ºÆ® ¹Ú½º¿¡¼­ Æ÷Ä¿½º°¡ ¾Æ¿ôµÆÀ» ¶§ ½ÇÇàµÉ ÇÔ¼ö
+	//// ë‹‰ë„¤ì„ì„ ì…ë ¥í•˜ëŠ” í…ìŠ¤íŠ¸ ë°•ìŠ¤ì—ì„œ í¬ì»¤ìŠ¤ê°€ ì•„ì›ƒëì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
 	//UFUNCTION()
 	//	void PlayerNicknameInputTextBoxOnCommitted(const FText& Text, ETextCommit::Type InCommitType);
 
 
 
-	// 2. ´Ğ³×ÀÓ ÀÔ·Â ¿À·ù Text Block
+	// 2. ë‹‰ë„¤ì„ ì…ë ¥ ì˜¤ë¥˜ Text Block
 
-	// ´Ğ³×ÀÓ ÀÔ·Â ¿À·ù ÅØ½ºÆ®
+	// ë‹‰ë„¤ì„ ì…ë ¥ ì˜¤ë¥˜ í…ìŠ¤íŠ¸
 	UPROPERTY(meta = (BindWidget))
 		UTextBlock* NicknameWarningText;
 
-	// ´Ğ³×ÀÓ ÀÔ·Â ¿À·ù ÅØ½ºÆ® °ü·Ã ÃÊ±âÈ­ ÇÔ¼ö
+	// ë‹‰ë„¤ì„ ì…ë ¥ ì˜¤ë¥˜ í…ìŠ¤íŠ¸ ê´€ë ¨ ì´ˆê¸°í™” í•¨ìˆ˜
 	UFUNCTION()
 		void InitializeNicknameWarningText();
 
-	// ´Ğ³×ÀÓ ¿À·ù ¹®±¸¸¦ ¶ç¿ïÁö ¸»Áö °áÁ¤ÇÏ´Â ÇÔ¼ö. ´Ğ³×ÀÓ ÀÔ·Â Editable Text BoxÀÇ OnChange ÀÌº¥Æ®¿¡ È£Ãâ
+	// ë‹‰ë„¤ì„ ì˜¤ë¥˜ ë¬¸êµ¬ë¥¼ ë„ìš¸ì§€ ë§ì§€ ê²°ì •í•˜ëŠ” í•¨ìˆ˜. ë‹‰ë„¤ì„ ì…ë ¥ Editable Text Boxì˜ OnChange ì´ë²¤íŠ¸ì— í˜¸ì¶œ
 	UFUNCTION()
 		void DetermineNicknameWarningVisible();
 
 
 
-	// 3. ÇÃ·¹ÀÌ Button
+	// 3. í”Œë ˆì´ Button
 
-	// ÇÃ·¹ÀÌ ¹öÆ°
+	// í”Œë ˆì´ ë²„íŠ¼
 	UPROPERTY(meta = (BindWidget))
 		UButton* PlayButton;
 
-	// ÇÃ·¹ÀÌ ¹öÆ° ÅØ½ºÆ®
+	// í”Œë ˆì´ ë²„íŠ¼ í…ìŠ¤íŠ¸
 	UPROPERTY(meta = (BindWidget))
 		UTextBlock* PlayButtonText;
 
-	// ÇÃ·¹ÀÌ ¹öÆ° °ü·Ã ÃÊ±âÈ­ ÇÔ¼ö
+	// í”Œë ˆì´ ë²„íŠ¼ ê´€ë ¨ ì´ˆê¸°í™” í•¨ìˆ˜
 	UFUNCTION()
 		void InitializePlayButton();
 
-	// ÇÃ·¹ÀÌ ¹öÆ°À» ´­·¶À» ¶§ ½ÇÇàµÉ ÇÔ¼ö
-	UFUNCTION()
+	// í”Œë ˆì´ ë²„íŠ¼ì„ ëˆŒë €ì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
+	UFUNCTION(BlueprintCallable, Category = "GameStartMenu")
 		void PlayButtonClicked();
 
-	// ÇÃ·¹ÀÌ ¹öÆ°ÀÌ È°¼ºÈ­µÉÁö °á¼ºÇÏ´Â ÇÔ¼ö. ´Ğ³×ÀÓ ÀÔ·Â Editable Text BoxÀÇ OnChange ÀÌº¥Æ®¿Í Ä³¸¯ÅÍ ¼±ÅÃ ¹öÆ°ÀÇ OnClick ÀÌº¥Æ®¿¡¼­ È£Ãâ
+	// í”Œë ˆì´ ë²„íŠ¼ì´ í™œì„±í™”ë ì§€ ê²°ì„±í•˜ëŠ” í•¨ìˆ˜. ë‹‰ë„¤ì„ ì…ë ¥ Editable Text Boxì˜ OnChange ì´ë²¤íŠ¸ì™€ ìºë¦­í„° ì„ íƒ ë²„íŠ¼ì˜ OnClick ì´ë²¤íŠ¸ì—ì„œ í˜¸ì¶œ
 	UFUNCTION()
 		void DeterminePlayButtonEnabled();
 
@@ -120,90 +121,90 @@ public:
 
 	// 4. Back Button
 
-	// Back ¹öÆ°
+	// Back ë²„íŠ¼
 	UPROPERTY(meta = (BindWidget))
 		UButton* BackButton;
 
-	// Back ¹öÆ° ÅØ½ºÆ®
+	// Back ë²„íŠ¼ í…ìŠ¤íŠ¸
 	UPROPERTY(meta = (BindWidget))
 		UTextBlock* BackButtonText;
 
-	// Back ¹öÆ° °ü·Ã ÃÊ±âÈ­ ÇÔ¼ö
+	// Back ë²„íŠ¼ ê´€ë ¨ ì´ˆê¸°í™” í•¨ìˆ˜
 	UFUNCTION()
 		void InitializeBackButton();
 
-	// Back ¹öÆ°À» ´­·¶À» ¶§ ½ÇÇàµÉ ÇÔ¼ö
-	UFUNCTION()
+	// Back ë²„íŠ¼ì„ ëˆŒë €ì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
+	UFUNCTION(BlueprintCallable, Category = "GameStartMenu")
 		void BackButtonClicked();
 	
 
 
-	// 5. Ä³¸¯ÅÍ ¼±ÅÃ Button & Border
+	// 5. ìºë¦­í„° ì„ íƒ Button & Border
 
-	// (0) °øÅë
+	// (0) ê³µí†µ
 
-	// °¢ Ä³¸¯ÅÍº°·Î ¹öÆ°ÀÌ ¼±ÅÃµÇ¾ú´ÂÁö bool º¯¼ö¸¦ ÀúÀåÇÑ map º¯¼ö
+	// ê° ìºë¦­í„°ë³„ë¡œ ë²„íŠ¼ì´ ì„ íƒë˜ì—ˆëŠ”ì§€ bool ë³€ìˆ˜ë¥¼ ì €ì¥í•œ map ë³€ìˆ˜
 	UPROPERTY()
 		TMap<ECharacters, bool> IsCharacterClickedMap;
 
-	// ¸ğµç Ä³¸¯ÅÍ ¹öÆ°ÀÇ Å×µÎ¸®¸¦ ÀúÀåÇÑ Map
+	// ëª¨ë“  ìºë¦­í„° ë²„íŠ¼ì˜ í…Œë‘ë¦¬ë¥¼ ì €ì¥í•œ Map
 	UPROPERTY()
 		TMap<ECharacters, UBorder*> CharacterBordersMap;
 
-	// Ä³¸¯ÅÍ ¼±ÅÃ ¹öÆ°µé°ú Border °ü·Ã ÃÊ±âÈ­. Ä³¸¯ÅÍ Ãß°¡½Ã Ãß°¡ ÇÊ¿ä
+	// ìºë¦­í„° ì„ íƒ ë²„íŠ¼ë“¤ê³¼ Border ê´€ë ¨ ì´ˆê¸°í™”. ìºë¦­í„° ì¶”ê°€ì‹œ ì¶”ê°€ í•„ìš”
 	UFUNCTION()
 		void InitializeCharacterSelectButtonsAndBorders();
 
-	// ¾î¶² Ä³¸¯ÅÍ ¹öÆ°ÀÌµç ¼±ÅÃµÆÀ» ¶§ ½ÇÇàµÉ ÇÔ¼ö
+	// ì–´ë–¤ ìºë¦­í„° ë²„íŠ¼ì´ë“  ì„ íƒëì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
 	UFUNCTION()
 		void AnyCharacterSelected(ECharacters SelectedCharacter);
 
 
 	// (1) Wood Character
 
-	// ³ª¹« Ä³¸¯ÅÍ ¹öÆ°
+	// ë‚˜ë¬´ ìºë¦­í„° ë²„íŠ¼
 	UPROPERTY(meta = (BindWidget))
 		UButton* WoodCharacterSelectButton;
 
-	// ³ª¹« Ä³¸¯ÅÍ Å×µÎ¸®
+	// ë‚˜ë¬´ ìºë¦­í„° í…Œë‘ë¦¬
 	UPROPERTY(meta = (BindWidget))
 		UBorder* WoodCharacterBorder;
 
-	// ³ª¹« Ä³¸¯ÅÍ ¹öÆ°À» ´­·¶À» ¶§ ½ÇÇàµÉ ÇÔ¼ö
-	UFUNCTION()
+	// ë‚˜ë¬´ ìºë¦­í„° ë²„íŠ¼ì„ ëˆŒë €ì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
+	UFUNCTION(BlueprintCallable, Category = "GameStartMenu")
 		void WoodCharacterSelectButtonClicked();
 
 
 	// (2) Ninja Character
 
-	// ´ÑÀÚ Ä³¸¯ÅÍ ¹öÆ°
+	// ë‹Œì ìºë¦­í„° ë²„íŠ¼
 	UPROPERTY(meta = (BindWidget))
 		UButton* NinjaCharacterSelectButton;
 
-	// ´ÑÀÚ Ä³¸¯ÅÍ Å×µÎ¸®
+	// ë‹Œì ìºë¦­í„° í…Œë‘ë¦¬
 	UPROPERTY(meta = (BindWidget))
 		UBorder* NinjaCharacterBorder;
 
-	// ´ÑÀÚ Ä³¸¯ÅÍ ¹öÆ°À» ´­·¶À» ¶§ ½ÇÇàµÉ ÇÔ¼ö
-	UFUNCTION()
+	// ë‹Œì ìºë¦­í„° ë²„íŠ¼ì„ ëˆŒë €ì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
+	UFUNCTION(BlueprintCallable, Category = "GameStartMenu")
 		void NinjaCharacterSelectButtonClicked();
 
 	
-	// »õ Ä³¸¯ÅÍ°¡ Ãß°¡µÇ¸é Button, Border, Onclick ÇÔ¼ö¸¦ ¿©±âºÎÅÍ Ãß°¡ÇÏ¸é µÊ
+	// ìƒˆ ìºë¦­í„°ê°€ ì¶”ê°€ë˜ë©´ Button, Border, Onclick í•¨ìˆ˜ë¥¼ ì—¬ê¸°ë¶€í„° ì¶”ê°€í•˜ë©´ ë¨
 
 
 	// (3) Random Character
 
-	// ·£´ı Ä³¸¯ÅÍ ¹öÆ°
+	// ëœë¤ ìºë¦­í„° ë²„íŠ¼
 	UPROPERTY(meta = (BindWidget))
 		UButton* RandomCharacterSelectButton;
 
-	// ·£´ı Ä³¸¯ÅÍ Å×µÎ¸®
+	// ëœë¤ ìºë¦­í„° í…Œë‘ë¦¬
 	UPROPERTY(meta = (BindWidget))
 		UBorder* RandomCharacterBorder;
 
-	// ·£´ı Ä³¸¯ÅÍ ¹öÆ°À» ´­·¶À» ¶§ ½ÇÇàµÉ ÇÔ¼ö
-	UFUNCTION()
+	// ëœë¤ ìºë¦­í„° ë²„íŠ¼ì„ ëˆŒë €ì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
+	UFUNCTION(BlueprintCallable, Category = "GameStartMenu")
 		void RandomCharacterSelectButtonClicked();
 
 };

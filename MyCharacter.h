@@ -12,7 +12,7 @@
 
 
 
-DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
+//DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 
 UCLASS()
 class TEKKEN_API AMyCharacter : public ACharacter
@@ -34,6 +34,12 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// 각 캐릭터 클래스 생성자에서 공통으로 실행해야 하는 함수 모음
+	UFUNCTION()
+		void CharacterClassCommonConstructor();
+
+
+
 	// Character Detail (각 캐릭터 클래스에서 초기화)
 	// 캐릭터 아이디
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Detail")
@@ -46,6 +52,8 @@ public:
 		int32 AttackRange;
 	// 캐릭터 디테일 변수 초기화
 		virtual void InitializeCharacterDetail();
+	// 캐릭터의 enum class를 키, 캐릭터의 이름을 FName 값으로 갖는 해시 테이블. 각 캐릭터 클래스에서 추가
+		static TMap<ECharacters, FName> CharacterNameMap;
 
 
 
@@ -149,13 +157,13 @@ public:
 	// Hp
 	// 캐릭터의 최대 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hp")
-	float MaxHp;
+		int32 MaxHp;
 	// 캐릭터의 현재 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hp")
-	float CurrentHp;
+		int32 CurrentHp;
 	// 체력 변화량을 받아서 남은 체력 업데이트. GameOver = true이면 더 이상 Hp가 변하지 않음
 	UFUNCTION(BlueprintCallable, Category = "Hp")
-	void UpdateHpLeft(float HpDiff);
+	void UpdateHpLeft(int32 HpDiff);
 	// 게임 종료 여부. 게임이 종료되면 더 이상 Hp가 변하지 않음
 	UPROPERTY(BlueprintReadWrite, Category = "Hp")
 		bool bGameOver;
