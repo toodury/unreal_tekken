@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "GamePlayUI.h"
@@ -7,40 +7,42 @@
 
 void UGamePlayUI::NativeConstruct()
 {
-	// ·ÎÄÃ º¯¼ö ÃÊ±âÈ­
+	// ë¡œì»¬ ë³€ìˆ˜ ì´ˆê¸°í™”
 
 	GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GameInstance)
 	{
-		PlayerCharacter = Cast<AMyCharacter>(GameInstance->PlayerCharacter);
-		ComputerCharacter = Cast<AMyCharacter>(GameInstance->ComputerCharacter);
+		//PlayerCharacter = Cast<AMyCharacter>(GameInstance->PlayerCharacter);
+		//ComputerCharacter = Cast<AMyCharacter>(GameInstance->ComputerCharacter);
+		PlayerCharacter = GameInstance->PlayerCharacter;
+		ComputerCharacter = GameInstance->ComputerCharacter;
 	}
 
 	GameMode = Cast<AtekkenGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
-	// Ä³¸¯ÅÍ Ã¼·Â Progress Bar °ü·Ã ÃÊ±âÈ­
+	// ìºë¦­í„° ì²´ë ¥ Progress Bar ê´€ë ¨ ì´ˆê¸°í™”
 	InitializeCharacterHpProgressBar();
 
-	// ÇÃ·¹ÀÌ¾î¿Í ÄÄÇ»ÅÍ Ä³¸¯ÅÍÀÇ ´Ð³×ÀÓ ÃÊ±âÈ­
+	// í”Œë ˆì´ì–´ì™€ ì»´í“¨í„° ìºë¦­í„°ì˜ ë‹‰ë„¤ìž„ ì´ˆê¸°í™”
 	InitializeNicknameText();
 
-	// ÇÃ·¹ÀÌ¾î¿Í ÄÄÇ»ÅÍÀÇ ¼¼Æ® ½Â¸® ¼ö ÃÊ±âÈ­
+	// í”Œë ˆì´ì–´ì™€ ì»´í“¨í„°ì˜ ì„¸íŠ¸ ìŠ¹ë¦¬ ìˆ˜ ì´ˆê¸°í™”
 	InitializePlayerAndComputerWins();
 
-	// °ÔÀÓÀÇ ÁøÇà ½Ã°£ ÃÊ±âÈ­
+	// ê²Œìž„ì˜ ì§„í–‰ ì‹œê°„ ì´ˆê¸°í™”
 	InitializeGameCountdownText();
 
-	// °ÔÀÓ ÁøÇà °ü·Ã bool º¯¼ö ÃÊ±âÈ­
+	// ê²Œìž„ ì§„í–‰ ê´€ë ¨ bool ë³€ìˆ˜ ì´ˆê¸°í™”
 	bGameStart = false;
 	bAfterEndTimerStarted = false;
 
-	// °ÔÀÓ ½ÃÀÛ ´ë±â ½Ã°£ ÃÊ±âÈ­
+	// ê²Œìž„ ì‹œìž‘ ëŒ€ê¸° ì‹œê°„ ì´ˆê¸°í™”
 	InitializeCountdownBeforeGameText();
 
-	// WinnerText ÃÊ±âÈ­
+	// WinnerText ì´ˆê¸°í™”
 	InitializeWinnerText();
 
-	// ÇöÀç ·¹º§ ÃÊ±âÈ­
+	// í˜„ìž¬ ë ˆë²¨ ì´ˆê¸°í™”
 	InitializeLevelText();
 }
 
@@ -48,30 +50,30 @@ void UGamePlayUI::NativeConstruct()
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	// µÎ Ä³¸¯ÅÍÀÇ Ã¼·Â¹Ù ¾÷µ¥ÀÌÆ®
+	// ë‘ ìºë¦­í„°ì˜ ì²´ë ¥ë°” ì—…ë°ì´íŠ¸
 	UpdateHpProgressBar(PlayerCharacter, PlayerHp);
 	UpdateHpProgressBar(ComputerCharacter, ComputerHp);
 
-	// °ÔÀÓ ½ÃÀÛ Àü 3ÃÊ Ä«¿îÆ®´Ù¿î ¾÷µ¥ÀÌÆ®. °ÔÀÓÀÌ ½ÃÀÛµÆÀ» ¶© ½ÇÇà ¾È µÊ
+	// ê²Œìž„ ì‹œìž‘ ì „ 3ì´ˆ ì¹´ìš´íŠ¸ë‹¤ìš´ ì—…ë°ì´íŠ¸. ê²Œìž„ì´ ì‹œìž‘ëì„ ë• ì‹¤í–‰ ì•ˆ ë¨
 	if (!bGameStart)
 		UpdateCountdownBeforeGameText();
 
-	// °ÔÀÓ ½ÃÀÛ Àü¿£ Countdown ¾×ÅÍÀÇ CountdownTimer ÇÔ¼ö¿¡¼­ 60ÃÊ¿¡¼­ ½Ã°£ÀÌ ÁÙ¾îµéÁö ¾ÊÀ½. GameStart ÇÔ¼ö¿¡¼­ ¾÷µ¥ÀÌÆ® ½ÃÀÛ
+	// ê²Œìž„ ì‹œìž‘ ì „ì—” Countdown ì•¡í„°ì˜ CountdownTimer í•¨ìˆ˜ì—ì„œ 60ì´ˆì—ì„œ ì‹œê°„ì´ ì¤„ì–´ë“¤ì§€ ì•ŠìŒ. GameStart í•¨ìˆ˜ì—ì„œ ì—…ë°ì´íŠ¸ ì‹œìž‘
 	UpdateGameCountdownText();
 
 }*/
 
 void UGamePlayUI::Tick(FGeometry MyGeometry, float DeltaTime)
 {
-	// µÎ Ä³¸¯ÅÍÀÇ Ã¼·Â¹Ù ¾÷µ¥ÀÌÆ®
+	// ë‘ ìºë¦­í„°ì˜ ì²´ë ¥ë°” ì—…ë°ì´íŠ¸
 	UpdateHpProgressBar(PlayerCharacter, PlayerHp);
 	UpdateHpProgressBar(ComputerCharacter, ComputerHp);
 
-	// °ÔÀÓ ½ÃÀÛ Àü 3ÃÊ Ä«¿îÆ®´Ù¿î ¾÷µ¥ÀÌÆ®. °ÔÀÓÀÌ ½ÃÀÛµÆÀ» ¶© ½ÇÇà ¾È µÊ
+	// ê²Œìž„ ì‹œìž‘ ì „ 3ì´ˆ ì¹´ìš´íŠ¸ë‹¤ìš´ ì—…ë°ì´íŠ¸. ê²Œìž„ì´ ì‹œìž‘ëì„ ë• ì‹¤í–‰ ì•ˆ ë¨
 	if (!bGameStart)
 		UpdateCountdownBeforeGameText();
 
-	// °ÔÀÓ ½ÃÀÛ Àü¿£ Countdown ¾×ÅÍÀÇ CountdownTimer ÇÔ¼ö¿¡¼­ 60ÃÊ¿¡¼­ ½Ã°£ÀÌ ÁÙ¾îµéÁö ¾ÊÀ½. GameStart ÇÔ¼ö¿¡¼­ ¾÷µ¥ÀÌÆ® ½ÃÀÛ
+	// ê²Œìž„ ì‹œìž‘ ì „ì—” Countdown ì•¡í„°ì˜ CountdownTimer í•¨ìˆ˜ì—ì„œ 60ì´ˆì—ì„œ ì‹œê°„ì´ ì¤„ì–´ë“¤ì§€ ì•ŠìŒ. GameStart í•¨ìˆ˜ì—ì„œ ì—…ë°ì´íŠ¸ ì‹œìž‘
 	UpdateGameCountdownText();
 
 	UE_LOG(LogTemp, Log, TEXT("Tick"));
@@ -81,14 +83,14 @@ void UGamePlayUI::WhenPlayerWin()
 {
 	if (GameInstance)
 	{
-		// ÇÃ·¹ÀÌ¾î ¼¼Æ® ½Â¸® ¼ö¸¦ ÇÏ³ª ¿Ã¸®°í You Win ÅØ½ºÆ®¸¦ ¶ç¿ò
+		// í”Œë ˆì´ì–´ ì„¸íŠ¸ ìŠ¹ë¦¬ ìˆ˜ë¥¼ í•˜ë‚˜ ì˜¬ë¦¬ê³  You Win í…ìŠ¤íŠ¸ë¥¼ ë„ì›€
 		GameInstance->PlayerWinCnt++;
 		if (WinnerText)
 			WinnerText->SetText(FText::FromString(TEXT("You Win")));
 
-		// ÇÃ·¹ÀÌ¾î ¼¼Æ® ½Â¸® 3È¸ ´Þ¼º ½Ã
-		// ¾ÕÀ¸·Î ÁøÇàÇÒ ·¹º§ÀÌ ³²¾ÆÀÖ´Ù¸é ´ÙÀ½ ·¹º§·Î ÁøÇà
-		// ¸¶Áö¸· ·¹º§ÀÌ¾ú´Ù¸é °ÔÀÓ Á¾·á
+		// í”Œë ˆì´ì–´ ì„¸íŠ¸ ìŠ¹ë¦¬ 3íšŒ ë‹¬ì„± ì‹œ
+		// ì•žìœ¼ë¡œ ì§„í–‰í•  ë ˆë²¨ì´ ë‚¨ì•„ìžˆë‹¤ë©´ ë‹¤ìŒ ë ˆë²¨ë¡œ ì§„í–‰
+		// ë§ˆì§€ë§‰ ë ˆë²¨ì´ì—ˆë‹¤ë©´ ê²Œìž„ ì¢…ë£Œ
 		if (GameInstance->PlayerWinCnt == 3)
 		{
 			if (GameInstance->MaxLevel > GameInstance->CurrentLevel)
@@ -103,12 +105,12 @@ void UGamePlayUI::WhenComputerWin()
 {
 	if (GameInstance)
 	{
-		// ÄÄÇ»ÅÍ ¼¼Æ® ½Â¸® ¼ö¸¦ ÇÏ³ª ¿Ã¸®°í You Lose ÅØ½ºÆ®¸¦ ¶ç¿ò
+		// ì»´í“¨í„° ì„¸íŠ¸ ìŠ¹ë¦¬ ìˆ˜ë¥¼ í•˜ë‚˜ ì˜¬ë¦¬ê³  You Lose í…ìŠ¤íŠ¸ë¥¼ ë„ì›€
 		GameInstance->ComputerWinCnt++;
 		if (WinnerText)
 			WinnerText->SetText(FText::FromString(TEXT("You Lose")));
 
-		// ÄÄÇ»ÅÍ ¼¼Æ® ½Â¸® 3È¸ ´Þ¼º ½Ã °ÔÀÓ Á¾·á
+		// ì»´í“¨í„° ì„¸íŠ¸ ìŠ¹ë¦¬ 3íšŒ ë‹¬ì„± ì‹œ ê²Œìž„ ì¢…ë£Œ
 		if (GameInstance->ComputerWinCnt == 3)
 			bQuitGame = true;
 	}
@@ -116,18 +118,20 @@ void UGamePlayUI::WhenComputerWin()
 
 void UGamePlayUI::WhenDraw()
 {
-	// ºñ°åÀ» ½Ã ¾Æ¹« ÀÏµµ ¾È ÀÏ¾î³ª°í »õ ¼¼Æ®¸¦ ½ÃÀÛÇÏ¹Ç·Î Draw ÅØ½ºÆ®¸¸ ¶ç¿öÁÖ¸é µÊ
+	// ë¹„ê²¼ì„ ì‹œ ì•„ë¬´ ì¼ë„ ì•ˆ ì¼ì–´ë‚˜ê³  ìƒˆ ì„¸íŠ¸ë¥¼ ì‹œìž‘í•˜ë¯€ë¡œ Draw í…ìŠ¤íŠ¸ë§Œ ë„ì›Œì£¼ë©´ ë¨
 	if (WinnerText)
 		WinnerText->SetText(FText::FromString(TEXT("Draw")));
 }
 
 void UGamePlayUI::WhenGameOver()
 {
-	// °¢ Ä³¸¯ÅÍÀÇ bGameOver¸¦ true·Î ¼³Á¤ÇØ ´õ ÀÌ»ó Ä³¸¯ÅÍÀÇ Ã¼·ÂÀÌ ´ÞÁö ¾Êµµ·Ï ¼³Á¤
-	if (PlayerCharacter)
-		PlayerCharacter->bGameOver = true;
-	if (ComputerCharacter)
-		ComputerCharacter->bGameOver = true;
+	if (GameInstance)
+	{// ê° ìºë¦­í„°ì˜ bGameOverë¥¼ trueë¡œ ì„¤ì •í•´ ë” ì´ìƒ ìºë¦­í„°ì˜ ì²´ë ¥ì´ ë‹¬ì§€ ì•Šë„ë¡ ì„¤ì •
+		if (GameInstance->PlayerCharacter)
+			GameInstance->PlayerCharacter->bGameOver = true;
+		if (GameInstance->ComputerCharacter)
+			GameInstance->ComputerCharacter->bGameOver = true;
+	}
 
 	if (GameInstance)
 	{
@@ -135,24 +139,24 @@ void UGamePlayUI::WhenGameOver()
 		{
 			if (GameInstance->CountdownActor->bGoNextGame)
 			{
-				// °ÔÀÓ Á¾·á
+				// ê²Œìž„ ì¢…ë£Œ
 				if (bQuitGame)
 					UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 				else if (bGoToNextLevel)
 				{
-					// ´ÙÀ½ ·¹º§·Î ÀÌµ¿ ½Ã °ÔÀÓ ÀÎ½ºÅÏ½º¿¡¼­ ¼¼Æ® ½Â¸® ¼ö ÃÊ±âÈ­ÇÏ°í ·¹º§ ÇÏ³ª ¿Ã¸²
+					// ë‹¤ìŒ ë ˆë²¨ë¡œ ì´ë™ ì‹œ ê²Œìž„ ì¸ìŠ¤í„´ìŠ¤ì—ì„œ ì„¸íŠ¸ ìŠ¹ë¦¬ ìˆ˜ ì´ˆê¸°í™”í•˜ê³  ë ˆë²¨ í•˜ë‚˜ ì˜¬ë¦¼
 					GameInstance->PlayerWinCnt = 0;
 					GameInstance->ComputerWinCnt = 0;
 					GameInstance->CurrentLevel++;
 				}
-				// °ÔÀÓ ´Ù½Ã ½ÃÀÛ
+				// ê²Œìž„ ë‹¤ì‹œ ì‹œìž‘
 				UGameplayStatics::OpenLevel(GetWorld(), TEXT("PlayMap"));
 			}
 			else
 			{
 				if (!bAfterEndTimerStarted)
 				{
-					// °ÔÀÓ Á¾·á ÀÌÈÄ 3ÃÊ°£ ´ë±â
+					// ê²Œìž„ ì¢…ë£Œ ì´í›„ 3ì´ˆê°„ ëŒ€ê¸°
 					GameInstance->CountdownActor->StartCountdownAfterEnd();
 					bAfterEndTimerStarted = true;
 				}
@@ -163,32 +167,32 @@ void UGamePlayUI::WhenGameOver()
 
 void UGamePlayUI::InitializeCharacterHpProgressBar()
 {
-	// ÇÃ·¹ÀÌ¾î´Â Ã¼·ÂÀÌ ¿ÞÂÊ¿¡¼­ ¿À¸¥ÂÊÀ¸·Î ´Þ°í ÄÄÇ»ÅÍ´Â ¹Ý´ë·Î ´ÞÀ½
-	// ÃÖÃÊÀÇ Ã¼·Â¹Ù´Â 100%·Î Â÷ÀÖ°í »ö±òÀº ÇÏ´Ã»ö
+	// í”Œë ˆì´ì–´ëŠ” ì²´ë ¥ì´ ì™¼ìª½ì—ì„œ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë‹¬ê³  ì»´í“¨í„°ëŠ” ë°˜ëŒ€ë¡œ ë‹¬ìŒ
+	// ìµœì´ˆì˜ ì²´ë ¥ë°”ëŠ” 100%ë¡œ ì°¨ìžˆê³  ìƒ‰ê¹”ì€ í•˜ëŠ˜ìƒ‰
 	if (PlayerHp)
 	{
 		PlayerHp->BarFillType = EProgressBarFillType::LeftToRight;
-		PlayerHp->SetPercent(1.0f);
+		//PlayerHp->SetPercent(1.0f);
 		PlayerHp->SetFillColorAndOpacity(FLinearColor(0.0f, 0.5f, 1.0f, 1.0f));
 	}
 
 	if (ComputerHp)
 	{
 		ComputerHp->BarFillType = EProgressBarFillType::RightToLeft;
-		ComputerHp->SetPercent(1.0f);
+		//ComputerHp->SetPercent(1.0f);
 		ComputerHp->SetFillColorAndOpacity(FLinearColor(0.0f, 0.5f, 1.0f, 1.0f));
 	}
 }
 
-void UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar)
+/*void UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar)
 {
-	int CurrentHp = Character->CurrentHp;		// ÇØ´ç Ä³¸¯ÅÍÀÇ Ã¼·Â
+	int CurrentHp = Character->CurrentHp;		// í•´ë‹¹ ìºë¦­í„°ì˜ ì²´ë ¥
 	if (HpProgressBar)
 	{
 		if (CurrentHp == 0)
 		{
-			// ÇØ´ç Ä³¸¯ÅÍÀÇ Ã¼·ÂÀÌ 0ÀÌ µÇ¸é bIsDead = true·Î ¼³Á¤
-			// ÇØ´ç Ä³¸¯ÅÍ°¡ ÀÌ°åÀ» ¶§ÀÇ ÇÔ¼ö, °ÔÀÓ Á¾·á ÇÔ¼ö ½ÇÇà
+			// í•´ë‹¹ ìºë¦­í„°ì˜ ì²´ë ¥ì´ 0ì´ ë˜ë©´ bIsDead = trueë¡œ ì„¤ì •
+			// í•´ë‹¹ ìºë¦­í„°ê°€ ì´ê²¼ì„ ë•Œì˜ í•¨ìˆ˜, ê²Œìž„ ì¢…ë£Œ í•¨ìˆ˜ ì‹¤í–‰
 			Character->bIsDead = true;
 			if (HpProgressBar == PlayerHp)
 				WhenComputerWin();
@@ -198,22 +202,22 @@ void UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpP
 				UE_LOG(LogTemp, Error, TEXT("Hp Progress Bar is invalid"));
 			WhenGameOver();
 		}
-		// Progress Bar´Â 0 ~ 1 »çÀÌÀÇ ¹üÀ§¸¦ °¡Áö¹Ç·Î 100À¸·Î ³ª´®
+		// Progress BarëŠ” 0 ~ 1 ì‚¬ì´ì˜ ë²”ìœ„ë¥¼ ê°€ì§€ë¯€ë¡œ 100ìœ¼ë¡œ ë‚˜ëˆ”
 		HpProgressBar->SetPercent(CurrentHp / 100.0f);
 	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("Hp Progress Bar is nullptr"));
-}
+}*/
 
-/*float UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar)
+float UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar)
 {
-	int CurrentHp = Character->CurrentHp;		// ÇØ´ç Ä³¸¯ÅÍÀÇ Ã¼·Â
+	int CurrentHp = Character->CurrentHp;		// í•´ë‹¹ ìºë¦­í„°ì˜ ì²´ë ¥
 	if (HpProgressBar)
 	{
 		if (CurrentHp == 0)
 		{
-			// ÇØ´ç Ä³¸¯ÅÍÀÇ Ã¼·ÂÀÌ 0ÀÌ µÇ¸é bIsDead = true·Î ¼³Á¤
-			// ÇØ´ç Ä³¸¯ÅÍ°¡ ÀÌ°åÀ» ¶§ÀÇ ÇÔ¼ö, °ÔÀÓ Á¾·á ÇÔ¼ö ½ÇÇà
+			// í•´ë‹¹ ìºë¦­í„°ì˜ ì²´ë ¥ì´ 0ì´ ë˜ë©´ bIsDead = trueë¡œ ì„¤ì •
+			// í•´ë‹¹ ìºë¦­í„°ê°€ ì´ê²¼ì„ ë•Œì˜ í•¨ìˆ˜, ê²Œìž„ ì¢…ë£Œ í•¨ìˆ˜ ì‹¤í–‰
 			Character->bIsDead = true;
 			if (HpProgressBar == PlayerHp)
 				WhenComputerWin();
@@ -223,31 +227,31 @@ void UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpP
 				UE_LOG(LogTemp, Error, TEXT("Hp Progress Bar Error"));
 			WhenGameOver();
 		}
-		// Progress Bar´Â 0 ~ 1 »çÀÌÀÇ ¹üÀ§¸¦ °¡Áö¹Ç·Î 100À¸·Î ³ª´®
-		HpProgressBar->SetPercent(CurrentHp / 100.0f);
+		// Progress BarëŠ” 0 ~ 1 ì‚¬ì´ì˜ ë²”ìœ„ë¥¼ ê°€ì§€ë¯€ë¡œ 100ìœ¼ë¡œ ë‚˜ëˆ”
+		//HpProgressBar->SetPercent(CurrentHp / 100.0f);
 	}
 	return CurrentHp / 100.0f;
 }
 
 float UGamePlayUI::UpdatePlayerHpProgressBar()
 {
-	return UpdateHpProgressBar(PlayerCharacter, PlayerHp);
+	return UpdateHpProgressBar(GameInstance->PlayerCharacter, PlayerHp);
 }
 
 float UGamePlayUI::UpdateComputerHpProgressBar()
 {
-	return UpdateHpProgressBar(ComputerCharacter, ComputerHp);
-}*/
+	return UpdateHpProgressBar(GameInstance->ComputerCharacter, ComputerHp);
+}
 
 void UGamePlayUI::InitializeNicknameText()
 {
 	if (GameInstance)
 	{
-		// ÇÃ·¹ÀÌ¾î ´Ð³×ÀÓÀº °ÔÀÓ ÀÎ½ºÅÏ½º¿¡¼­ °¡Á®¿È
+		// í”Œë ˆì´ì–´ ë‹‰ë„¤ìž„ì€ ê²Œìž„ ì¸ìŠ¤í„´ìŠ¤ì—ì„œ ê°€ì ¸ì˜´
 		if (PlayerNicknameText)
 			PlayerNicknameText->SetText(FText::FromString(GameInstance->PlayerNickname));
 
-		// ÄÄÇ»ÅÍ ´Ð³×ÀÓÀº ÇöÀç ·¹º§¿¡ ÇØ´çÇÏ´Â Ä³¸¯ÅÍÀÇ ÀÌ¸§À» CharacterNameMap¿¡¼­ °¡Á®¿È
+		// ì»´í“¨í„° ë‹‰ë„¤ìž„ì€ í˜„ìž¬ ë ˆë²¨ì— í•´ë‹¹í•˜ëŠ” ìºë¦­í„°ì˜ ì´ë¦„ì„ CharacterNameMapì—ì„œ ê°€ì ¸ì˜´
 		if (ComputerNicknameText)
 			ComputerNicknameText->SetText(FText::FromName(AMyCharacter::CharacterNameMap[static_cast<ECharacters>(GameInstance->CurrentLevel - 1)]));
 	}
@@ -255,7 +259,7 @@ void UGamePlayUI::InitializeNicknameText()
 
 void UGamePlayUI::InitializePlayerAndComputerWins()
 {
-	// Ã³À½¿£ ¸ðµÎ ÇÏ¾á»öÀ¸·Î ÃÊ±âÈ­
+	// ì²˜ìŒì—” ëª¨ë‘ í•˜ì–€ìƒ‰ìœ¼ë¡œ ì´ˆê¸°í™”
 	if (PlayerWinImage1)
 		PlayerWinImage1->SetColorAndOpacity(FLinearColor(FColor::White));
 
@@ -274,14 +278,14 @@ void UGamePlayUI::InitializePlayerAndComputerWins()
 	if (ComputerWinImage3)
 		ComputerWinImage3->SetColorAndOpacity(FLinearColor(FColor::White));
 
-	// °ÔÀÓ ÀÎ½ºÅÏ½ºÀÇ Ä³¸¯ÅÍº° ¼¼Æ® ½Â¸® ¼ö¿¡ µû¶ó »¡°£»öÀ¸·Î ¼³Á¤
+	// ê²Œìž„ ì¸ìŠ¤í„´ìŠ¤ì˜ ìºë¦­í„°ë³„ ì„¸íŠ¸ ìŠ¹ë¦¬ ìˆ˜ì— ë”°ë¼ ë¹¨ê°„ìƒ‰ìœ¼ë¡œ ì„¤ì •
 
 	if (GameInstance)
 	{
 		int8 PlayerWinCnt = GameInstance->PlayerWinCnt;
 		int8 ComputerWinCnt = GameInstance->ComputerWinCnt;
 
-		// ÇÃ·¹ÀÌ¾î ¼¼Æ® ½Â¸® ¼ö ¼³Á¤
+		// í”Œë ˆì´ì–´ ì„¸íŠ¸ ìŠ¹ë¦¬ ìˆ˜ ì„¤ì •
 		if (PlayerWinCnt >= 1)
 		{
 			if (PlayerWinImage1)
@@ -298,7 +302,7 @@ void UGamePlayUI::InitializePlayerAndComputerWins()
 				PlayerWinImage3->SetColorAndOpacity(FLinearColor(FColor::Red));
 		}
 
-		// ÄÄÇ»ÅÍ ¼¼Æ® ½Â¸® ¼ö ¼³Á¤
+		// ì»´í“¨í„° ì„¸íŠ¸ ìŠ¹ë¦¬ ìˆ˜ ì„¤ì •
 		if (ComputerWinCnt >= 1)
 		{
 			if (ComputerWinImage1)
@@ -330,42 +334,45 @@ void UGamePlayUI::InitializeGameCountdownText()
 	}
 }
 
-/*FText UGamePlayUI::UpdateGameCountdownText()
+FText UGamePlayUI::UpdateGameCountdownText()
 {
 	if (GameInstance)
 	{
 		if (GameInstance->CountdownActor)
 		{
-			// ½Ã°£Àº Countdown ¾×ÅÍ¿¡¼­ °¡Á®¿È
+			// ì‹œê°„ì€ Countdown ì•¡í„°ì—ì„œ ê°€ì ¸ì˜´
 			int32 Countdown = GameInstance->CountdownActor->CountdownTime;
-			if (GameCountdownText)
-				GameCountdownText->SetText(FText::FromString(FString::FromInt(Countdown)));
+			//if (GameCountdownText)
+				//GameCountdownText->SetText(FText::FromString(FString::FromInt(Countdown)));
 			if (Countdown == 0)
 			{
-				// ½Ã°£ÀÌ 0ÀÌ µÇ¸é ³²Àº Ã¼·Â¿¡ µû¶ó ´©°¡ ÀÌ°å´ÂÁö °áÁ¤ÇÏ°í °ÔÀÓ Á¾·á ÇÔ¼ö ½ÇÇà
+				// ì‹œê°„ì´ 0ì´ ë˜ë©´ ë‚¨ì€ ì²´ë ¥ì— ë”°ë¼ ëˆ„ê°€ ì´ê²¼ëŠ”ì§€ ê²°ì •í•˜ê³  ê²Œìž„ ì¢…ë£Œ í•¨ìˆ˜ ì‹¤í–‰
 				DetermineWhoWin();
 				WhenGameOver();
 			}
 			return FText::FromString(FString::FromInt(Countdown));
 		}
 	}
-	UE_LOG(LogTemp, Error, TEXT("Game Instance = nullptr"));
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
+	}
 	return FText::FromString(TEXT(""));
-}*/
+}
 
-void UGamePlayUI::UpdateGameCountdownText()
+/*void UGamePlayUI::UpdateGameCountdownText()
 {
 	if (GameInstance)
 	{
 		if (GameInstance->CountdownActor)
 		{
-			// ½Ã°£Àº Countdown ¾×ÅÍ¿¡¼­ °¡Á®¿È
+			// ì‹œê°„ì€ Countdown ì•¡í„°ì—ì„œ ê°€ì ¸ì˜´
 			int8 Countdown = GameInstance->CountdownActor->CountdownTime;
 			if (GameCountdownText)
 				GameCountdownText->SetText(FText::FromString(FString::FromInt(Countdown)));
 			if (Countdown == 0)
 			{
-				// ½Ã°£ÀÌ 0ÀÌ µÇ¸é ³²Àº Ã¼·Â¿¡ µû¶ó ´©°¡ ÀÌ°å´ÂÁö °áÁ¤ÇÏ°í °ÔÀÓ Á¾·á ÇÔ¼ö ½ÇÇà
+				// ì‹œê°„ì´ 0ì´ ë˜ë©´ ë‚¨ì€ ì²´ë ¥ì— ë”°ë¼ ëˆ„ê°€ ì´ê²¼ëŠ”ì§€ ê²°ì •í•˜ê³  ê²Œìž„ ì¢…ë£Œ í•¨ìˆ˜ ì‹¤í–‰
 				DetermineWhoWin();
 				WhenGameOver();
 			}
@@ -375,7 +382,7 @@ void UGamePlayUI::UpdateGameCountdownText()
 	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
-}
+}*/
 
 void UGamePlayUI::InitializeCountdownBeforeGameText()
 {
@@ -392,24 +399,26 @@ void UGamePlayUI::InitializeCountdownBeforeGameText()
 
 void UGamePlayUI::GameStart()
 {
-	// °ÔÀÓÀÌ ½ÃÀÛµÉ ¶§ ÀÏ¾î³ª¾ß ÇÒ ÀÏµé
+	// ê²Œìž„ì´ ì‹œìž‘ë  ë•Œ ì¼ì–´ë‚˜ì•¼ í•  ì¼ë“¤
 
-	// °ÔÀÓ ½ÃÀÛ Àü 3ÃÊ ½Ã°£À» ÀçÁÖ´Â ÅØ½ºÆ®´Â »ç¶óÁöµµ·Ï ÇÔ
-	if (CountdownBeforeGameText)
-		CountdownBeforeGameText->SetText(FText::FromString(TEXT("")));
+	// ê²Œìž„ ì‹œìž‘ ì „ 3ì´ˆ ì‹œê°„ì„ ìž¬ì£¼ëŠ” í…ìŠ¤íŠ¸ëŠ” ì‚¬ë¼ì§€ë„ë¡ í•¨
+	//if (CountdownBeforeGameText)
+//		CountdownBeforeGameText->SetText(FText::FromString(TEXT("")));
 
-	// »ç¿ëÀÚÀÇ ÄÁÆ®·Ñ·¯¸¦ ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍ¿¡°Ô ³Ñ°ÜÁÜ
-	GetWorld()->GetFirstPlayerController()->Possess(PlayerCharacter);
+	// ì‚¬ìš©ìžì˜ ì»¨íŠ¸ë¡¤ëŸ¬ë¥¼ í”Œë ˆì´ì–´ ìºë¦­í„°ì—ê²Œ ë„˜ê²¨ì¤Œ
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(GameInstance->PlayerCharacter);
 
-	// UpdateCountdownBerforeGameText ÇÔ¼ö¸¦ ´õ ÀÌ»ó È£ÃâÇÏÁö ¾ÊÀ½
+	// UpdateCountdownBerforeGameText í•¨ìˆ˜ë¥¼ ë” ì´ìƒ í˜¸ì¶œí•˜ì§€ ì•ŠìŒ
 	bGameStart = true;
 
-	// 60ÃÊ Ä«¿îÆ®´Ù¿î ½ÃÀÛ
+	// 60ì´ˆ ì¹´ìš´íŠ¸ë‹¤ìš´ ì‹œìž‘
 	if (GameInstance)
 		GameInstance->CountdownActor->StartCountdownTimer();
+
+	//UE_LOG(LogTemp, Log, TEXT("Game Start"));
 }
 
-void UGamePlayUI::UpdateCountdownBeforeGameText()
+/*void UGamePlayUI::UpdateCountdownBeforeGameText()
 {
 	if (GameInstance)
 	{
@@ -419,11 +428,11 @@ void UGamePlayUI::UpdateCountdownBeforeGameText()
 				GameStart();
 			else
 			{
-				// °ÔÀÓ ½ÃÀÛ Àü±îÁö ¸î ÃÊ ³²¾Ò´ÂÁö °¡Á®¿È
+				// ê²Œìž„ ì‹œìž‘ ì „ê¹Œì§€ ëª‡ ì´ˆ ë‚¨ì•˜ëŠ”ì§€ ê°€ì ¸ì˜´
 				int8 Countdown = GameInstance->CountdownActor->CountdownBeforeStartAfterEnd;
 				if (CountdownBeforeGameText)
 				{
-					// ½Ã°£ÀÌ ³²¾ÒÀ¸¸é ½Ã°£À¸·Î, ½Ã°£ÀÌ 0ÀÌ µÈ ¼ø°£ 0 ´ë½Å Go!·Î ¼³Á¤
+					// ì‹œê°„ì´ ë‚¨ì•˜ìœ¼ë©´ ì‹œê°„ìœ¼ë¡œ, ì‹œê°„ì´ 0ì´ ëœ ìˆœê°„ 0 ëŒ€ì‹  Go!ë¡œ ì„¤ì •
 					if (Countdown > 0)
 						CountdownBeforeGameText->SetText(FText::FromString(FString::FromInt(Countdown)));
 					else
@@ -436,9 +445,9 @@ void UGamePlayUI::UpdateCountdownBeforeGameText()
 	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
-}
+}*/
 
-/*FText UGamePlayUI::UpdateCountdownBeforeGameText()
+FText UGamePlayUI::UpdateCountdownBeforeGameText()
 {
 	if (!bGameStart)
 	{
@@ -450,24 +459,32 @@ void UGamePlayUI::UpdateCountdownBeforeGameText()
 					GameStart();
 				else
 				{
-					// °ÔÀÓ ½ÃÀÛ Àü±îÁö ¸î ÃÊ ³²¾Ò´ÂÁö °¡Á®¿È
+					// ê²Œìž„ ì‹œìž‘ ì „ê¹Œì§€ ëª‡ ì´ˆ ë‚¨ì•˜ëŠ”ì§€ ê°€ì ¸ì˜´
 					int32 Countdown = GameInstance->CountdownActor->CountdownBeforeStartAfterEnd;
+
 					if (CountdownBeforeGameText)
 					{
-						// ½Ã°£ÀÌ ³²¾ÒÀ¸¸é ½Ã°£À¸·Î, ½Ã°£ÀÌ 0ÀÌ µÈ ¼ø°£ 0 ´ë½Å Go!·Î ¼³Á¤
-						if (Countdown > 0)
+						// ì‹œê°„ì´ ë‚¨ì•˜ìœ¼ë©´ ì‹œê°„ìœ¼ë¡œ, ì‹œê°„ì´ 0ì´ ëœ ìˆœê°„ 0 ëŒ€ì‹  Go!ë¡œ ì„¤ì •
+						/*if (Countdown > 0)
 							CountdownBeforeGameText->SetText(FText::FromString(FString::FromInt(Countdown)));
 						else
-							CountdownBeforeGameText->SetText(FText::FromString(TEXT("Go!")));
+							CountdownBeforeGameText->SetText(FText::FromString(TEXT("Go!")));*/
+						if (Countdown > 0)
+							return FText::FromString(FString::FromInt(Countdown));
+						else
+							return FText::FromString(TEXT("Go!"));
 					}
-					return FText::FromString(FString::FromInt(Countdown));
+					//return FText::FromString(FString::FromInt(Countdown));
 				}
 			}
 		}
-		UE_LOG(LogTemp, Error, TEXT("Game Instance = nullptr"));
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Game Instance = nullptr"));
+		}
 	}
 	return FText::FromString(TEXT(""));
-}*/
+}
 
 void UGamePlayUI::InitializeWinnerText()
 {
@@ -479,10 +496,10 @@ void UGamePlayUI::DetermineWhoWin()
 {
 	if (GameInstance)
 	{
-		// µÎ Ä³¸¯ÅÍÀÇ ÇöÀç Ã¼·ÂÀ» ÀÐ¾î¿Í¼­ ´©°¡ ÀÌ°å´ÂÁö ÆÇ´ÜÇÏ°í
-		// ±×¿¡ µû¶ó ½Â¸® ÇÔ¼ö ½ÇÇà
-		int32 ComputerCharacterHp = ComputerCharacter->CurrentHp;
-		int32 PlayerCharacterHp = PlayerCharacter->CurrentHp;
+		// ë‘ ìºë¦­í„°ì˜ í˜„ìž¬ ì²´ë ¥ì„ ì½ì–´ì™€ì„œ ëˆ„ê°€ ì´ê²¼ëŠ”ì§€ íŒë‹¨í•˜ê³ 
+		// ê·¸ì— ë”°ë¼ ìŠ¹ë¦¬ í•¨ìˆ˜ ì‹¤í–‰
+		int32 ComputerCharacterHp = GameInstance->ComputerCharacter->CurrentHp;
+		int32 PlayerCharacterHp = GameInstance->PlayerCharacter->CurrentHp;
 		if (ComputerCharacterHp > PlayerCharacterHp)
 			WhenComputerWin();
 		else if (ComputerCharacterHp < PlayerCharacterHp)

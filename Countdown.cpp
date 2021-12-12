@@ -51,6 +51,7 @@ void ACountdown::StopCountdownTimer()
 void ACountdown::TimerBeforeStart()
 {
 	CountdownBeforeStartAfterEnd--;
+
 	if (CountdownBeforeStartAfterEnd < 0)
 	{
 		StopCountdownBeforeStart();

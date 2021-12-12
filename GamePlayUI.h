@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -23,235 +23,235 @@ class TEKKEN_API UGamePlayUI : public UUserWidget
 
 public:
 
-		// »ı¼ºÀÚ
+		// ìƒì„±ì
 		virtual void NativeConstruct() override;
 
 		void Tick(FGeometry MyGeometry, float DeltaTime);
 		//virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 		
-		// ÀÌ À§Á¬ ³»ºÎ¿¡¼­ ¾²ÀÏ ·ÎÄÃ º¯¼öµé
+		// ì´ ìœ„ì ¯ ë‚´ë¶€ì—ì„œ ì“°ì¼ ë¡œì»¬ ë³€ìˆ˜ë“¤
 
-		// °ÔÀÓ ¸ğµå
+		// ê²Œì„ ëª¨ë“œ
 		UPROPERTY()
 			AtekkenGameModeBase* GameMode;
 
-		// °ÔÀÓ ÀÎ½ºÅÏ½º
+		// ê²Œì„ ì¸ìŠ¤í„´ìŠ¤
 		UPROPERTY()
 			UMyGameInstance* GameInstance;
 
-		// ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍ
+		// í”Œë ˆì´ì–´ ìºë¦­í„°
 		UPROPERTY()
 			AMyCharacter* PlayerCharacter;
 
-		// ÄÄÇ»ÅÍ Ä³¸¯ÅÍ
+		// ì»´í“¨í„° ìºë¦­í„°
 		UPROPERTY()
 			AMyCharacter* ComputerCharacter;
 
 
 
-		// °ÔÀÓ °á°ú¸¦ Ã³¸®ÇÏ´Â º¯¼ö, ÇÔ¼öµé
+		// ê²Œì„ ê²°ê³¼ë¥¼ ì²˜ë¦¬í•˜ëŠ” ë³€ìˆ˜, í•¨ìˆ˜ë“¤
 
-		// trueÀÏ °æ¿ì ´ÙÀ½ ·¹º§·Î ÀÌµ¿
+		// trueì¼ ê²½ìš° ë‹¤ìŒ ë ˆë²¨ë¡œ ì´ë™
 		UPROPERTY()
 			bool bGoToNextLevel;
 
-		// trueÀÏ °æ¿ì °ÔÀÓ Á¾·á
+		// trueì¼ ê²½ìš° ê²Œì„ ì¢…ë£Œ
 		UPROPERTY()
 			bool bQuitGame;
 
-		// ÇÃ·¹ÀÌ¾î°¡ ÀÌ°åÀ» ¶§ ½ÇÇàµÉ ÇÔ¼ö
+		// í”Œë ˆì´ì–´ê°€ ì´ê²¼ì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
 		UFUNCTION()
 			void WhenPlayerWin();
 
-		// ÄÄÇ»ÅÍ°¡ ÀÌ°åÀ» ¶§ ½ÇÇàµÉ ÇÔ¼ö
+		// ì»´í“¨í„°ê°€ ì´ê²¼ì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
 		UFUNCTION()
 			void WhenComputerWin();
 
-		// ºñ°åÀ» ¶§ ½ÇÇàµÉ ÇÔ¼ö
+		// ë¹„ê²¼ì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
 		UFUNCTION()
 			void WhenDraw();
 
-		// °ÔÀÓÀÌ ³¡³µÀ» ¶§ ½ÇÇàµÉ ÇÔ¼ö
+		// ê²Œì„ì´ ëë‚¬ì„ ë•Œ ì‹¤í–‰ë  í•¨ìˆ˜
 		UFUNCTION()
 			void WhenGameOver();
 
 
 	
-		// ¹ÙÀÎµùµÉ UI À§Á¬ Ç×¸ñµé°ú °ü·Ã º¯¼ö, ÇÔ¼öµé
+		// ë°”ì¸ë”©ë  UI ìœ„ì ¯ í•­ëª©ë“¤ê³¼ ê´€ë ¨ ë³€ìˆ˜, í•¨ìˆ˜ë“¤
 
-		// 1. Ä³¸¯ÅÍ Ã¼·Â
+		// 1. ìºë¦­í„° ì²´ë ¥
 
-		// ÇÃ·¹ÀÌ¾î Ã¼·Â Progress Bar
+		// í”Œë ˆì´ì–´ ì²´ë ¥ Progress Bar
 		UPROPERTY(meta = (BindWidget))
 			UProgressBar* PlayerHp;
 
-		// ÄÄÇ»ÅÍ Ã¼·Â Progress Bar
+		// ì»´í“¨í„° ì²´ë ¥ Progress Bar
 		UPROPERTY(meta = (BindWidget))
 			UProgressBar* ComputerHp;
 
-		// Ä³¸¯ÅÍ Ã¼·Â Progress Bar °ü·Ã ÃÊ±âÈ­ ÇÔ¼ö
+		// ìºë¦­í„° ì²´ë ¥ Progress Bar ê´€ë ¨ ì´ˆê¸°í™” í•¨ìˆ˜
 		UFUNCTION()
 			void InitializeCharacterHpProgressBar();
 
-		// ¼±ÅÃµÈ Ä³¸¯ÅÍÀÇ Ã¼·Â Progress Bar¸¦ ¾÷µ¥ÀÌÆ® ÇÏ´Â ÇÔ¼ö. Ã¼·Â¹ÙÀÇ Percent °ªÀ» ¸®ÅÏ
+		// ì„ íƒëœ ìºë¦­í„°ì˜ ì²´ë ¥ Progress Barë¥¼ ì—…ë°ì´íŠ¸ í•˜ëŠ” í•¨ìˆ˜. ì²´ë ¥ë°”ì˜ Percent ê°’ì„ ë¦¬í„´
 		UFUNCTION()
-			//float UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar);
-			void UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar);
+			float UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar);
+			//void UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar);
 
-		/*// ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍÀÇ Ã¼·Â Progress Bar¸¦ ¾÷µ¥ÀÌÆ® ÇÏ´Â ÇÔ¼ö. Ã¼·Â¹ÙÀÇ Percent °ªÀ» ¸®ÅÏ
+		// í”Œë ˆì´ì–´ ìºë¦­í„°ì˜ ì²´ë ¥ Progress Barë¥¼ ì—…ë°ì´íŠ¸ í•˜ëŠ” í•¨ìˆ˜. ì²´ë ¥ë°”ì˜ Percent ê°’ì„ ë¦¬í„´
 		UFUNCTION(BlueprintCallable, Category = "Hp")
 			float UpdatePlayerHpProgressBar();
 
-		// ÄÄÇ»ÅÍ Ä³¸¯ÅÍÀÇ Ã¼·Â Progress Bar¸¦ ¾÷µ¥ÀÌÆ® ÇÏ´Â ÇÔ¼ö. Ã¼·Â¹ÙÀÇ Percent °ªÀ» ¸®ÅÏ
+		// ì»´í“¨í„° ìºë¦­í„°ì˜ ì²´ë ¥ Progress Barë¥¼ ì—…ë°ì´íŠ¸ í•˜ëŠ” í•¨ìˆ˜. ì²´ë ¥ë°”ì˜ Percent ê°’ì„ ë¦¬í„´
 		UFUNCTION(BlueprintCallable, Category = "Hp")
-			float UpdateComputerHpProgressBar();*/
+			float UpdateComputerHpProgressBar();
 
 
 
-		// 2. Ä³¸¯ÅÍ ´Ğ³×ÀÓ
+		// 2. ìºë¦­í„° ë‹‰ë„¤ì„
 
-		// ÇÃ·¹ÀÌ¾î ´Ğ³×ÀÓ ÅØ½ºÆ®
+		// í”Œë ˆì´ì–´ ë‹‰ë„¤ì„ í…ìŠ¤íŠ¸
 		UPROPERTY(meta = (BindWidget))
 			UTextBlock* PlayerNicknameText;
 
-		// ÄÄÇ»ÅÍ ´Ğ³×ÀÓ ÅØ½ºÆ®
+		// ì»´í“¨í„° ë‹‰ë„¤ì„ í…ìŠ¤íŠ¸
 		UPROPERTY(meta = (BindWidget))
 			UTextBlock* ComputerNicknameText;
 
-		// ÇÃ·¹ÀÌ¾î¿Í ÄÄÇ»ÅÍ Ä³¸¯ÅÍÀÇ ´Ğ³×ÀÓ °ü·Ã ÃÊ±âÈ­ÇÏ´Â ÇÔ¼ö
+		// í”Œë ˆì´ì–´ì™€ ì»´í“¨í„° ìºë¦­í„°ì˜ ë‹‰ë„¤ì„ ê´€ë ¨ ì´ˆê¸°í™”í•˜ëŠ” í•¨ìˆ˜
 		UFUNCTION()
 			void InitializeNicknameText();
 
 
 
-		// 3. Ä³¸¯ÅÍº° ¼¼Æ® ½Â¸® ¼ö¸¦ Ç¥½ÃÇÏ´Â Border, Image
-		// N¹øÀÇ ÀÌ¹ÌÁö´Â ÇØ´ç Ä³¸¯ÅÍ°¡ N¹øÀÇ ¼¼Æ®¸¦ ½Â¸®ÇßÀ» ¶§ »¡°£»öÀ¸·Î ¼³Á¤
+		// 3. ìºë¦­í„°ë³„ ì„¸íŠ¸ ìŠ¹ë¦¬ ìˆ˜ë¥¼ í‘œì‹œí•˜ëŠ” Border, Image
+		// Në²ˆì˜ ì´ë¯¸ì§€ëŠ” í•´ë‹¹ ìºë¦­í„°ê°€ Në²ˆì˜ ì„¸íŠ¸ë¥¼ ìŠ¹ë¦¬í–ˆì„ ë•Œ ë¹¨ê°„ìƒ‰ìœ¼ë¡œ ì„¤ì •
 
-		// ÇÃ·¹ÀÌ¾î ½Â¸® Å×µÎ¸®1
+		// í”Œë ˆì´ì–´ ìŠ¹ë¦¬ í…Œë‘ë¦¬1
 		UPROPERTY(meta = (BindWidget))
 			UBorder* PlayerWinBorder1;
 
-		// ÇÃ·¹ÀÌ¾î ½Â¸® ÀÌ¹ÌÁö1
+		// í”Œë ˆì´ì–´ ìŠ¹ë¦¬ ì´ë¯¸ì§€1
 		UPROPERTY(meta = (BindWidget))
 			UImage* PlayerWinImage1;
 
-		// ÇÃ·¹ÀÌ¾î ½Â¸® Å×µÎ¸®2
+		// í”Œë ˆì´ì–´ ìŠ¹ë¦¬ í…Œë‘ë¦¬2
 		UPROPERTY(meta = (BindWidget))
 			UBorder* PlayerWinBorder2;
 
-		// ÇÃ·¹ÀÌ¾î ½Â¸® ÀÌ¹ÌÁö2
+		// í”Œë ˆì´ì–´ ìŠ¹ë¦¬ ì´ë¯¸ì§€2
 		UPROPERTY(meta = (BindWidget))
 			UImage* PlayerWinImage2;
 
-		// ÇÃ·¹ÀÌ¾î ½Â¸® Å×µÎ¸®3
+		// í”Œë ˆì´ì–´ ìŠ¹ë¦¬ í…Œë‘ë¦¬3
 		UPROPERTY(meta = (BindWidget))
 			UBorder* PlayerWinBorder3;
 
-		// ÇÃ·¹ÀÌ¾î ½Â¸® ÀÌ¹ÌÁö3
+		// í”Œë ˆì´ì–´ ìŠ¹ë¦¬ ì´ë¯¸ì§€3
 		UPROPERTY(meta = (BindWidget))
 			UImage* PlayerWinImage3;
 
-		// ÄÄÇ»ÅÍ ½Â¸® Å×µÎ¸®1
+		// ì»´í“¨í„° ìŠ¹ë¦¬ í…Œë‘ë¦¬1
 		UPROPERTY(meta = (BindWidget))
 			UBorder* ComputerWinBorder1;
 
-		// ÄÄÇ»ÅÍ ½Â¸® ÀÌ¹ÌÁö1
+		// ì»´í“¨í„° ìŠ¹ë¦¬ ì´ë¯¸ì§€1
 		UPROPERTY(meta = (BindWidget))
 			UImage* ComputerWinImage1;
 
-		// ÄÄÇ»ÅÍ ½Â¸® Å×µÎ¸®2
+		// ì»´í“¨í„° ìŠ¹ë¦¬ í…Œë‘ë¦¬2
 		UPROPERTY(meta = (BindWidget))
 			UBorder* ComputerWinBorder2;
 
-		// ÄÄÇ»ÅÍ ½Â¸® ÀÌ¹ÌÁö2
+		// ì»´í“¨í„° ìŠ¹ë¦¬ ì´ë¯¸ì§€2
 		UPROPERTY(meta = (BindWidget))
 			UImage* ComputerWinImage2;
 
-		// ÄÄÇ»ÅÍ ½Â¸® Å×µÎ¸®3
+		// ì»´í“¨í„° ìŠ¹ë¦¬ í…Œë‘ë¦¬3
 		UPROPERTY(meta = (BindWidget))
 			UBorder* ComputerWinBorder3;
 
-		// ÄÄÇ»ÅÍ ½Â¸® ÀÌ¹ÌÁö3
+		// ì»´í“¨í„° ìŠ¹ë¦¬ ì´ë¯¸ì§€3
 		UPROPERTY(meta = (BindWidget))
 			UImage* ComputerWinImage3;
 
-		// ÇÃ·¹ÀÌ¾î¿Í ÄÄÇ»ÅÍ Ä³¸¯ÅÍÀÇ ¼¼Æ® ½Â¸® ¼ö °ü·Ã ÃÊ±âÈ­ÇÏ´Â ÇÔ¼ö
+		// í”Œë ˆì´ì–´ì™€ ì»´í“¨í„° ìºë¦­í„°ì˜ ì„¸íŠ¸ ìŠ¹ë¦¬ ìˆ˜ ê´€ë ¨ ì´ˆê¸°í™”í•˜ëŠ” í•¨ìˆ˜
 		UFUNCTION()
 			void InitializePlayerAndComputerWins();
 
 
 
-		// 4. °ÔÀÓÀÇ ³²Àº ½Ã°£
+		// 4. ê²Œì„ì˜ ë‚¨ì€ ì‹œê°„
 
-		// °ÔÀÓ ÁøÇà 60ÃÊ Áß ³²Àº ½Ã°£À» ³ªÅ¸³»´Â ÅØ½ºÆ®
+		// ê²Œì„ ì§„í–‰ 60ì´ˆ ì¤‘ ë‚¨ì€ ì‹œê°„ì„ ë‚˜íƒ€ë‚´ëŠ” í…ìŠ¤íŠ¸
 		UPROPERTY(meta = (BindWidget))
 			UTextBlock* GameCountdownText;
 
-		// °ÔÀÓ ÁøÇà ½Ã°£ °ü·Ã ÃÊ±âÈ­ ÇÔ¼ö
+		// ê²Œì„ ì§„í–‰ ì‹œê°„ ê´€ë ¨ ì´ˆê¸°í™” í•¨ìˆ˜
 		UFUNCTION()
 			void InitializeGameCountdownText();
 
-		// °ÔÀÓÀÇ ³²Àº ½Ã°£À» ¾÷µ¥ÀÌÆ® ÇÏ´Â ÇÔ¼ö. ³²Àº ½Ã°£ °ªÀ» ¸®ÅÏ
-		/*UFUNCTION(BlueprintCallable, Category = "Countdown")
-			FText UpdateGameCountdownText();*/
-		UFUNCTION()
-			void UpdateGameCountdownText();
+		// ê²Œì„ì˜ ë‚¨ì€ ì‹œê°„ì„ ì—…ë°ì´íŠ¸ í•˜ëŠ” í•¨ìˆ˜. ë‚¨ì€ ì‹œê°„ ê°’ì„ ë¦¬í„´
+		UFUNCTION(BlueprintCallable, Category = "Countdown")
+			FText UpdateGameCountdownText();
+		/*UFUNCTION()
+			void UpdateGameCountdownText();*/
 
 
 
-		// 5. °ÔÀÓ ½ÃÀÛ Àü 3ÃÊ ´ë±â ½Ã°£
+		// 5. ê²Œì„ ì‹œì‘ ì „ 3ì´ˆ ëŒ€ê¸° ì‹œê°„
 
-		// °ÔÀÓ ½ÃÀÛ Àü 3ÃÊ ´ë±â ½Ã°£ Áß ³²Àº ½Ã°£À» ³ªÅ¸³»´Â ÅØ½ºÆ®
+		// ê²Œì„ ì‹œì‘ ì „ 3ì´ˆ ëŒ€ê¸° ì‹œê°„ ì¤‘ ë‚¨ì€ ì‹œê°„ì„ ë‚˜íƒ€ë‚´ëŠ” í…ìŠ¤íŠ¸
 		UPROPERTY(meta = (BindWidget))
 			UTextBlock* CountdownBeforeGameText;
 
-		// °ÔÀÓ ½ÃÀÛ Àü ´ë±â ½Ã°£ °ü·Ã ÃÊ±âÈ­ ÇÔ¼ö
+		// ê²Œì„ ì‹œì‘ ì „ ëŒ€ê¸° ì‹œê°„ ê´€ë ¨ ì´ˆê¸°í™” í•¨ìˆ˜
 		UFUNCTION()
 			void InitializeCountdownBeforeGameText();
 
-		// °ÔÀÓÀÌ ½ÃÀÛÇß´ÂÁö ¿©ºÎ¸¦ ÀÇ¹ÌÇÏ´Â bool º¯¼ö
+		// ê²Œì„ì´ ì‹œì‘í–ˆëŠ”ì§€ ì—¬ë¶€ë¥¼ ì˜ë¯¸í•˜ëŠ” bool ë³€ìˆ˜
 		UPROPERTY()
 			bool bGameStart;
 
-		// °ÔÀÓ ½ÃÀÛÀ» ÀÇ¹ÌÇÏ´Â ÇÔ¼ö. UpdateCountdownBerforeGameText ÇÔ¼ö¿¡¼­ ½ÇÇà
+		// ê²Œì„ ì‹œì‘ì„ ì˜ë¯¸í•˜ëŠ” í•¨ìˆ˜. UpdateCountdownBerforeGameText í•¨ìˆ˜ì—ì„œ ì‹¤í–‰
 		UFUNCTION()
 			void GameStart();
 
-		// °ÔÀÓ ½ÃÀÛ Àü 3ÃÊ ´ë±â ½Ã°£À» ¾÷µ¥ÀÌÆ®ÇÏ´Â ÇÔ¼ö. bGameStart = falseÀÏ ¶§¸¸ ³²Àº ½Ã°£ ¸®ÅÏ
-		/*UFUNCTION(BlueprintCallable, Category = "Countdown")
-			FText UpdateCountdownBeforeGameText();*/
-		UFUNCTION()
-			void UpdateCountdownBeforeGameText();
+		// ê²Œì„ ì‹œì‘ ì „ 3ì´ˆ ëŒ€ê¸° ì‹œê°„ì„ ì—…ë°ì´íŠ¸í•˜ëŠ” í•¨ìˆ˜. bGameStart = falseì¼ ë•Œë§Œ ë‚¨ì€ ì‹œê°„ ë¦¬í„´
+		UFUNCTION(BlueprintCallable, Category = "Countdown")
+			FText UpdateCountdownBeforeGameText();
+		/*UFUNCTION()
+			void UpdateCountdownBeforeGameText();*/
 
-		// °ÔÀÓÀÌ ³¡³ª°í 3ÃÊ µ¿¾È ´ë±âÇÒ Å¸ÀÌ¸Ó°¡ ½ÇÇàµÆ´ÂÁö¸¦ ÀÇ¹ÌÇÏ´Â bool º¯¼ö
+		// ê²Œì„ì´ ëë‚˜ê³  3ì´ˆ ë™ì•ˆ ëŒ€ê¸°í•  íƒ€ì´ë¨¸ê°€ ì‹¤í–‰ëëŠ”ì§€ë¥¼ ì˜ë¯¸í•˜ëŠ” bool ë³€ìˆ˜
 		UPROPERTY()
 			bool bAfterEndTimerStarted;
 
 
 
-		// 6. ´©°¡ ÀÌ°å´ÂÁö °á°ú
+		// 6. ëˆ„ê°€ ì´ê²¼ëŠ”ì§€ ê²°ê³¼
 
-		// ´©°¡ ÀÌ°å´ÂÁö °á°ú¸¦ ³ªÅ¸³»´Â ÅØ½ºÆ®
+		// ëˆ„ê°€ ì´ê²¼ëŠ”ì§€ ê²°ê³¼ë¥¼ ë‚˜íƒ€ë‚´ëŠ” í…ìŠ¤íŠ¸
 		UPROPERTY(meta = (BindWidget))
 			UTextBlock* WinnerText;
 
-		// WinnerText °ü·Ã ÃÊ±âÈ­ÇÏ´Â ÇÔ¼ö
+		// WinnerText ê´€ë ¨ ì´ˆê¸°í™”í•˜ëŠ” í•¨ìˆ˜
 		UFUNCTION()
 			void InitializeWinnerText();
 
-		// 60ÃÊ ½Ã°£ ÃÊ°ú ½Ã ´©°¡ ÀÌ°å´ÂÁö ÆÇ´ÜÇÏ´Â ÇÔ¼ö. UpdateGameCountdownText ÇÔ¼ö¿¡¼­ ½ÇÇà
+		// 60ì´ˆ ì‹œê°„ ì´ˆê³¼ ì‹œ ëˆ„ê°€ ì´ê²¼ëŠ”ì§€ íŒë‹¨í•˜ëŠ” í•¨ìˆ˜. UpdateGameCountdownText í•¨ìˆ˜ì—ì„œ ì‹¤í–‰
 		UFUNCTION()
 			void DetermineWhoWin();
 
 
 
-		// 7. ÇöÀç ·¹º§
+		// 7. í˜„ì¬ ë ˆë²¨
 
-		// ÇöÀç ·¹º§À» ³ªÅ¸³»´Â ÅØ½ºÆ®
+		// í˜„ì¬ ë ˆë²¨ì„ ë‚˜íƒ€ë‚´ëŠ” í…ìŠ¤íŠ¸
 		UPROPERTY(meta = (BindWidget))
 			UTextBlock* LevelText;
 
-		// ÇöÀç ·¹º§ °ü·Ã ÃÊ±âÈ­ÇÏ´Â ÇÔ¼ö
+		// í˜„ì¬ ë ˆë²¨ ê´€ë ¨ ì´ˆê¸°í™”í•˜ëŠ” í•¨ìˆ˜
 		UFUNCTION()
 			void InitializeLevelText();
 };
