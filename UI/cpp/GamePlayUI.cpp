@@ -35,6 +35,9 @@ void UGamePlayUI::NativeConstruct()
 	// 게임 진행 관련 bool 변수 초기화
 	bGameStart = false;
 	bAfterEndTimerStarted = false;
+	bGameOver = false;
+	bGoToNextLevel = false;
+	bQuitGame = false;
 
 	// 게임 시작 대기 시간 초기화
 	InitializeCountdownBeforeGameText();
@@ -84,7 +87,12 @@ void UGamePlayUI::WhenPlayerWin()
 	if (GameInstance)
 	{
 		// 플레이어 세트 승리 수를 하나 올리고 You Win 텍스트를 띄움
-		GameInstance->PlayerWinCnt++;
+		if (!bGameOver)
+		{
+			// 게임이 끝날 때 한 번만 업데이트
+			GameInstance->PlayerWinCnt++;
+			bGameOver = true;
+		}
 		if (WinnerText)
 			WinnerText->SetText(FText::FromString(TEXT("You Win")));
 
@@ -106,7 +114,12 @@ void UGamePlayUI::WhenComputerWin()
 	if (GameInstance)
 	{
 		// 컴퓨터 세트 승리 수를 하나 올리고 You Lose 텍스트를 띄움
-		GameInstance->ComputerWinCnt++;
+		if (!bGameOver)
+		{
+			// 게임이 끝날 때 한 번만 업데이트
+			GameInstance->ComputerWinCnt++;
+			bGameOver = true;
+		}
 		if (WinnerText)
 			WinnerText->SetText(FText::FromString(TEXT("You Lose")));
 
@@ -132,6 +145,9 @@ void UGamePlayUI::WhenGameOver()
 		if (GameInstance->ComputerCharacter)
 			GameInstance->ComputerCharacter->bGameOver = true;
 	}
+
+	// 게임 결과에 따라 세트 승리 수 업데이트
+	UpdatePlayerAndComputerWins();
 
 	if (GameInstance)
 	{
@@ -212,6 +228,7 @@ void UGamePlayUI::InitializeCharacterHpProgressBar()
 float UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar)
 {
 	int CurrentHp = Character->CurrentHp;		// 해당 캐릭터의 체력
+	
 	if (HpProgressBar)
 	{
 		if (CurrentHp == 0)
@@ -278,6 +295,12 @@ void UGamePlayUI::InitializePlayerAndComputerWins()
 	if (ComputerWinImage3)
 		ComputerWinImage3->SetColorAndOpacity(FLinearColor(FColor::White));
 
+	// 플레이어와 컴퓨터의 세트 승리 수에 맞게 빨간색으로 설정
+	UpdatePlayerAndComputerWins();
+}
+
+void UGamePlayUI::UpdatePlayerAndComputerWins()
+{
 	// 게임 인스턴스의 캐릭터별 세트 승리 수에 따라 빨간색으로 설정
 
 	if (GameInstance)
@@ -344,6 +367,7 @@ FText UGamePlayUI::UpdateGameCountdownText()
 			int32 Countdown = GameInstance->CountdownActor->CountdownTime;
 			//if (GameCountdownText)
 				//GameCountdownText->SetText(FText::FromString(FString::FromInt(Countdown)));
+			
 			if (Countdown == 0)
 			{
 				// 시간이 0이 되면 남은 체력에 따라 누가 이겼는지 결정하고 게임 종료 함수 실행

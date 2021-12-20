@@ -37,10 +37,17 @@ AMyCharacter::AMyCharacter()
 
 	// Attack 변수 초기화
 	KeyClickInterval = 0.0f;
-	CurrentAttackMotion = TEXT("");
+	//CurrentAttackMotion = TEXT("");
+	//AttakMotionCollisionComponentTable.Emplace(TEXT(""), nullptr);
+	// 이걸 왜 썼냐면 Sphere On Collision 에서 CurrentAttackMotion이 ""일 때 
+	// 테이블에 그거에 해당하는 값이 없어서 어서트가 뜨기 때문
+	CurrentAttackMotion = EAttackMotion::Idle;
+
+	// Hit 변수 초기화
+	bIsHit = false;
 
 	// AI 변수 초기화
-	bIsControlledByAI = true;
+	//bIsControlledByAI = true;
 
 	// 각종 컴포넌트 초기화
 	InitializeComponents();
@@ -223,11 +230,18 @@ void AMyCharacter::OnSphereCollisionComponentBeginOverlap(UPrimitiveComponent* O
 	
 	if (OtherCharacter)
 	{
-		/*if (OtherCharacter->GetCapsuleComponent() == OtherComp && OverlappedComp == AttakMotionCollisionComponentTable[CurrentAttackMotion] && OtherCharacter != this)
+		USphereComponent* CollisionComponent;
+		if (AttackMotionCollisionComponentTable.Contains(CurrentAttackMotion))
+			CollisionComponent = AttackMotionCollisionComponentTable[CurrentAttackMotion];
+		else
+			CollisionComponent = nullptr;
+
+		if (OtherCharacter->GetCapsuleComponent() == OtherComp && OtherCharacter != this && bAttacking && Cast<USphereComponent>(OverlappedComp) == CollisionComponent)
 		{
 			OtherCharacter->UpdateHpLeft(-AttackMotionDamageTable[CurrentAttackMotion]);
 			Cast<UParticleSystemComponent>((OverlappedComp->GetAttachChildren())[0])->Activate(true);
-		}*/
+			//UE_LOG(LogTemp, Log, TEXT("CurrentAttackMotion : %s"), *CurrentAttackMotion);
+		}
 	}
 }
 
@@ -302,12 +316,22 @@ void AMyCharacter::OnCapsuleComponentBeginOverlap(UPrimitiveComponent* Overlappe
 
 	if (OtherCharacter)
 	{
-		FString AttckMotion = OtherCharacter->CurrentAttackMotion;	// 상대 캐릭터의 공격 모션
+		//FString AttckMotion = OtherCharacter->CurrentAttackMotion;	// 상대 캐릭터의 공격 모션
+		EAttackMotion AttackMotion = OtherCharacter->CurrentAttackMotion;
+		bool bOtherCharacterAttacking = OtherCharacter->bAttacking;
 
-		/*if (OtherCharacter != this && OtherComp == OtherCharacter->AttakMotionCollisionComponentTable[AttckMotion])
+		USphereComponent* CollisionComponent;
+		if (OtherCharacter->AttackMotionCollisionComponentTable.Contains(AttackMotion))
+			CollisionComponent = OtherCharacter->AttackMotionCollisionComponentTable[AttackMotion];
+		else
+			CollisionComponent = nullptr;
+
+		if (OtherCharacter != this && Cast<USphereComponent>(OtherComp) == CollisionComponent && bOtherCharacterAttacking)
 		{
-			HitPositionBoolTable[AttackMotionHitPositionTable[AttckMotion]] = true;
-		}*/
+			UE_LOG(LogTemp, Log, TEXT("Hit"));
+			HitPositionBoolTable[OtherCharacter->AttackMotionHitPositionTable[AttackMotion]] = true;
+			bIsHit = true;
+		}
 	}
 }
 
@@ -315,6 +339,8 @@ void AMyCharacter::OnCapsuleComponentEndOverlap(UPrimitiveComponent* OverlappedC
 {
 	// HitPositionBoolTable의 모든 값을 false로 설정
 	// 즉 캐릭터가 맞지 않은 상태로 설정
+
+	bIsHit = false;
 
 	for (auto Elem : HitPositionBoolTable)
 	{
@@ -334,7 +360,8 @@ void AMyCharacter::InitializeCapsuleComponent()
 	MyCapsuleComponent->OnComponentEndOverlap.AddDynamic(this, &AMyCharacter::OnCapsuleComponentEndOverlap);
 }
 
-bool AMyCharacter::GetAttackMotionBoolTable(FString AttackMotion)
+//bool AMyCharacter::GetAttackMotionBoolTable(FString AttackMotion)
+bool AMyCharacter::GetAttackMotionBoolTable(EAttackMotion AttackMotion)
 {
 	if (AttackMotionBoolTable.Contains(AttackMotion))
 		return AttackMotionBoolTable[AttackMotion];
@@ -342,7 +369,8 @@ bool AMyCharacter::GetAttackMotionBoolTable(FString AttackMotion)
 		return false;
 }
 
-float AMyCharacter::GetAttackMotionDamageTable(FString AttackMotion)
+//float AMyCharacter::GetAttackMotionDamageTable(FString AttackMotion)
+float AMyCharacter::GetAttackMotionDamageTable(EAttackMotion AttackMotion)
 {
 	if (AttackMotionDamageTable.Contains(AttackMotion))
 		return AttackMotionDamageTable[AttackMotion];
@@ -452,8 +480,12 @@ void AMyCharacter::MakeIdle()
 		AttackMotionBoolTable[Elem.Key] = false;
 	}
 
+	// 공격 상태 해제
+	bAttacking = false;
+
 	// 현재 공격 모션을 빈 스트링으로 설정
-	CurrentAttackMotion = TEXT("");
+	//CurrentAttackMotion = TEXT("");
+	CurrentAttackMotion = EAttackMotion::Idle;
 }
 
 void AMyCharacter::InitializeAttackTable()
@@ -477,7 +509,8 @@ void AMyCharacter::DetermineAttackMotion()
 {
 	FString InputString = TEXT("");
 	//TArray<EInputKey> KeysToDetermineAttackMotion;
-	FString NewAttackMotion = TEXT("");
+	//FString NewAttackMotion = TEXT("");
+	EAttackMotion NewAttackMotion = EAttackMotion::Idle;
 	
 	for (int32 i = InputKeyArray.Num() - 1; i >= 0; i--)
 	{
@@ -537,6 +570,14 @@ void AMyCharacter::WhenRightKickKeyClicked()
 	DetermineAttackMotion();
 }
 
+bool AMyCharacter::GetHitPositionBoolTable(EHitPosition HitPosition)
+{
+	if (HitPositionBoolTable.Contains(HitPosition))
+		return HitPositionBoolTable[HitPosition];
+	else
+		return false;
+}
+
 void AMyCharacter::InitializeHitTable()
 {
 	HitPositionBoolTable.Emplace(EHitPosition::LeftArm, false);
@@ -548,27 +589,6 @@ void AMyCharacter::InitializeHitTable()
 }
 
 void AMyCharacter::RandomAttack()
-{
-	if (CharacterName == FName(TEXT("Wood")))
-	{
-		WoodRandomAttack();
-	}
-	else if (CharacterName == FName(TEXT("Ninja")))
-	{
-		NinjaRandomAttack();
-	}
-	else
-	{
-		UE_LOG(LogActor, Error, TEXT("No Such Character"));
-	}
-}
-
-void AMyCharacter::WoodRandomAttack()
-{
-	WhenLeftPunchKeyClicked();
-}
-
-void AMyCharacter::NinjaRandomAttack()
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());

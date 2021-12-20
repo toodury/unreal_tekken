@@ -50,7 +50,7 @@ public:
 		int8 MaxLevel;
 
 	// 현재 레벨
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Level")
 		int8 CurrentLevel;
 
 	// 시간을 재기 위한 Countdown 액터

@@ -23,7 +23,8 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 	if (nullptr == PlayerCharacter)
 		return false;
 
-	bResult = (PlayerCharacter->GetDistanceTo(ComputerCharacter) <= ComputerCharacter->AttackRange);
+	bResult = (PlayerCharacter->GetDistanceTo(ComputerCharacter) <= ComputerCharacter->MaxAttackRange
+		&& PlayerCharacter->GetDistanceTo(ComputerCharacter) >= ComputerCharacter->MinAttackRange);
 
 	UE_LOG(LogTemp, Log, TEXT("%f"), PlayerCharacter->GetDistanceTo(ComputerCharacter));
 

@@ -26,6 +26,9 @@ public:
 	// 나무 캐릭터 Attack Table 초기화
 	virtual void InitializeAttackTable() override;
 
+	// 나무 캐릭터의 랜덤 공격 함수 재정의
+	virtual void RandomAttack() override;
+
 	// Hit
 	// 나무 캐릭터 Hit Table 초기화
 	virtual void InitializeHitTable() override;

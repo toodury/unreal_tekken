@@ -51,6 +51,10 @@ public:
 
 		// 게임 결과를 처리하는 변수, 함수들
 
+		// 게임이 종료될 경우 true로 설정. true일 때만 Win Cnt를 1 더함
+		UPROPERTY()
+			bool bGameOver;
+
 		// true일 경우 다음 레벨로 이동
 		UPROPERTY()
 			bool bGoToNextLevel;
@@ -178,6 +182,10 @@ public:
 		// 플레이어와 컴퓨터 캐릭터의 세트 승리 수 관련 초기화하는 함수
 		UFUNCTION()
 			void InitializePlayerAndComputerWins();
+
+		// 플레이어와 컴퓨터 캐릭터의 세트 승리 수를 업데이트하는 함수
+		UFUNCTION()
+			void UpdatePlayerAndComputerWins();
 
 
 

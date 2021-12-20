@@ -10,7 +10,7 @@
  * 
  */
 
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EAttackMotion : uint8 {
 	LeftJap UMETA(DisplayName = "LeftJap"),
 	LeftHook UMETA(DisplayName = "LeftHook"),
@@ -22,7 +22,7 @@ enum class EAttackMotion : uint8 {
 	LowRightThaiKick UMETA(DisplayName = "LowRightThaiKick"),
 	CutDownKick UMETA(DisplayName = "CutDownKick"),
 	WheelKick UMETA(DisplayName = "WheelKick")
-};
+};*/
 
 UCLASS()
 class TEKKEN_API ANinjaCharacter : public AMyCharacter

@@ -74,6 +74,25 @@ enum class ECharacters : uint8 {
 	Random UMETA(DisplayName = "Random")
 };
 
+// 모든 캐릭터들의 공격 모션 모음
+// 캐릭터이름__공격모션
+// 캐릭터의 첫번째 공격 모션이라면 맨뒤에 _Fisrt, 마지막이라면 _Last를 붙여야 함
+UENUM(BlueprintType)
+enum class EAttackMotion : uint8 {
+	Idle UMETA(DisplayName = "Idle"),
+	Wood__RightHandAttack UMETA(DisplayName = "Wood__RightHandAttack"),
+	Ninja__LeftJap UMETA(DisplayName = "Ninja__LeftJap"),
+	Ninja__LeftHook UMETA(DisplayName = "Ninja__LeftHook"),
+	Ninja__SpinningBackfist UMETA(DisplayName = "Ninja__SpinningBackfist"),
+	Ninja__RightCross UMETA(DisplayName = "Ninja__RightCross"),
+	Ninja__RightUppercut UMETA(DisplayName = "Ninja__RightUppercut"),
+	Ninja__ObliqueKick UMETA(DisplayName = "Ninja__ObliqueKick"),
+	Ninja__StraightKick UMETA(DisplayName = "Ninja__StraightKick"),
+	Ninja__LowRightThaiKick UMETA(DisplayName = "Ninja__LowRightThaiKick"),
+	Ninja__CutDownKick UMETA(DisplayName = "Ninja__CutDownKick"),
+	Ninja__WheelKick UMETA(DisplayName = "Ninja__WheelKick")
+};
+
 class TEKKEN_API CharacterEnumClasses
 {
 		

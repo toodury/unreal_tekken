@@ -25,7 +25,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	ComputerCharacter->RandomAttack();
 
-	GetWorld()->GetTimerManager().SetTimer(StopAttackTimerHandle, this, &UBTTask_Attack::StopAttack, 2.0f, true);
+	//GetWorld()->GetTimerManager().SetTimer(StopAttackTimerHandle, this, &UBTTask_Attack::StopAttack, 2.0f, true);
+	GetWorld()->GetTimerManager().SetTimer(StopAttackTimerHandle, this, &UBTTask_Attack::StopAttack, 0.5f, true);
 
 	return EBTNodeResult::InProgress;
 }
@@ -35,7 +36,13 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 	if (!IsAttacking)
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		auto ComputerCharacter = Cast<AMyCharacter>(Cast<ACharacterAIController>(OwnerComp.GetAIOwner())->GetPawn());
+		if (ComputerCharacter != nullptr && !(ComputerCharacter->bAttacking))
+		{
+			ComputerCharacter->MakeIdle();
+			UE_LOG(LogTemp, Log, TEXT("Attack End"));
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
 	}
 }
 

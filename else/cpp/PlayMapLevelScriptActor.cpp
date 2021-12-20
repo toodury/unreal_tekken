@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayMapLevelScriptActor.h"
@@ -25,7 +25,7 @@ void APlayMapLevelScriptActor::PlayMapBeginPlay()
 
 	if (GameMode != nullptr && GameInstance != nullptr)
 	{
-		// ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍ ½ºÆù
+		// í”Œë ˆì´ì–´ ìºë¦­í„° ìŠ¤í°
 		ECharacters PlayerCharacterToSpawn = GameInstance->PlayerCharacterSelected;
 		FTransform PlayerCharacterSpawnTransform;
 		PlayerCharacterSpawnTransform.SetLocation(FVector(0.0f, 0.0f, 0.0f));
@@ -35,9 +35,9 @@ void APlayMapLevelScriptActor::PlayMapBeginPlay()
 		GameMode->SpawnCharacter(PlayerCharacterToSpawn, PlayerCharacterSpawnTransform, SpawnedPlayerCharacter);
 
 		GameInstance->PlayerCharacter = Cast<AMyCharacter>(SpawnedPlayerCharacter);
-		GameInstance->PlayerCharacter->bIsControlledByAI = false;
+		//GameInstance->PlayerCharacter->bIsControlledByAI = false;
 
-		// ÄÄÇ»ÅÍ Ä³¸¯ÅÍ ½ºÆù
+		// ì»´í“¨í„° ìºë¦­í„° ìŠ¤í°
 		ECharacters ComputerCharacterToSpawn = static_cast<ECharacters>(GameInstance->CurrentLevel - 1);
 		FTransform ComputerCharacterSpawnTransform;
 		ComputerCharacterSpawnTransform.SetLocation(FVector(496.0f, 10.0f, 92.0f));
@@ -48,7 +48,7 @@ void APlayMapLevelScriptActor::PlayMapBeginPlay()
 
 		GameInstance->ComputerCharacter = Cast<AMyCharacter>(SpawnedComputerCharacter);
 
-		// Countdown ¾×ÅÍ ½ºÆù
+		// Countdown ì•¡í„° ìŠ¤í°
 		//ACountdown* Countdown = Cast<ACountdown>(GetWorld()->SpawnActor(ACountdown::StaticClass(), NAME_None, FVector(0.0f, 0.0f, -2000.0f)));
 		ACountdown* Countdown = Cast<ACountdown>(GetWorld()->SpawnActor<ACountdown>(FVector(0.0f, 0.0f, -2000.0f), FRotator(0.0f, 0.0f, 0.0f)));
 		GameInstance->CountdownActor = Countdown;

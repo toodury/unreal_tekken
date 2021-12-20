@@ -26,7 +26,8 @@ void AWoodCharacter::InitializeCharacterDetail()
 {
 	CharacterID = ECharacters::Wood;
 	CharacterName = FName(TEXT("Wood"));
-	AttackRange = 80;
+	MaxAttackRange = 80;
+	MinAttackRange = 60;
 }
 
 void AWoodCharacter::InitializeAttackTable()
@@ -36,20 +37,27 @@ void AWoodCharacter::InitializeAttackTable()
 	//AttackMotion.Emplace(EInputKey::LeftPunch);
 	//AttackMotionTable.Emplace(FEInputKeyArray(AttackMotion), TEXT("Attack"));
 
-	AttackMotionTable.Emplace(TEXT("H"), TEXT("Attack"));
+	AttackMotionTable.Emplace(TEXT("H"), EAttackMotion::Wood__RightHandAttack);
 
-	AttackMotionBoolTable.Emplace(TEXT("Attack"), false);
+	AttackMotionBoolTable.Emplace(EAttackMotion::Wood__RightHandAttack, false);
 
-	FinalAttackMotions.Emplace(TEXT("Attack"));
+	FinalAttackMotions.Emplace(EAttackMotion::Wood__RightHandAttack);
 
-	AttackMotionDamageTable.Emplace(TEXT("Attack"), 5.0f);
+	AttackMotionDamageTable.Emplace(EAttackMotion::Wood__RightHandAttack, 5.0f);
+}
+
+void AWoodCharacter::RandomAttack()
+{
+	WhenLeftPunchKeyClicked();
+	UE_LOG(LogTemp, Log, TEXT("Wood Attack"));
 }
 
 void AWoodCharacter::InitializeHitTable()
 {
 	AMyCharacter::InitializeHitTable();
 
-	AttackMotionHitPositionTable.Emplace(TEXT("Attack"), EHitPosition::LeftArm);
+	AttackMotionHitPositionTable.Emplace(EAttackMotion::Wood__RightHandAttack, EHitPosition::LeftArm);
 
-	AttakMotionCollisionComponentTable.Emplace(TEXT("Attack"), RightHandCollision);
+	AttackMotionCollisionComponentTable.Emplace(EAttackMotion::Idle, nullptr);
+	AttackMotionCollisionComponentTable.Emplace(EAttackMotion::Wood__RightHandAttack, RightHandCollision);
 }

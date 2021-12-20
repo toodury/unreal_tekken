@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -21,15 +21,15 @@ public:
 
     virtual void BeginPlay() override;
 
-    // °ÔÀÓ ¸ğµå
+    // ê²Œì„ ëª¨ë“œ
     UPROPERTY()
         AtekkenGameModeBase* GameMode;
 
-    // °ÔÀÓ ÀÎ½ºÅÏ½º
+    // ê²Œì„ ì¸ìŠ¤í„´ìŠ¤
     UPROPERTY()
         UMyGameInstance* GameInstance;
 
-    // ·¹º§ ½ÃÀÛ ½Ã ½ÇÇàµÉ ÇÔ¼ö. ·¹º§ ºí·çÇÁ¸°Æ®¿¡¼­ Begin Play ÀÌº¥Æ®¿¡ È£ÃâµÊ
+    // ë ˆë²¨ ì‹œì‘ ì‹œ ì‹¤í–‰ë  í•¨ìˆ˜. ë ˆë²¨ ë¸”ë£¨í”„ë¦°íŠ¸ì—ì„œ Begin Play ì´ë²¤íŠ¸ì— í˜¸ì¶œë¨
     UFUNCTION(BlueprintCallable, Category = "PlayMap")
         void PlayMapBeginPlay();
 

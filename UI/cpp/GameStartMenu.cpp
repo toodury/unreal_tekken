@@ -198,9 +198,12 @@ void UGameStartMenu::AnyCharacterSelected(ECharacters SelectedCharacter)
 			// 랜덤 캐릭터가 선택되었을 경우 랜덤으로 캐릭터 설정
 			std::random_device rd;
 			std::mt19937 gen(rd());
-			std::uniform_int_distribution<int> dis(0, static_cast<int>(ECharacters::Random));
+			int CharacterNum = static_cast<int>(ECharacters::Random);	// 전체 캐릭터의 개수
+			std::uniform_int_distribution<int> dis(0, CharacterNum - 1);
 
-			GameInstance->PlayerCharacterSelected = static_cast<ECharacters>(dis(gen));
+			int RandomNumber = dis(gen);	// 0 ~ 캐릭터 개수 - 1 사이에서 뽑은 랜덤 정수
+
+			GameInstance->PlayerCharacterSelected = static_cast<ECharacters>(RandomNumber);
 		}
 		else
 		{
