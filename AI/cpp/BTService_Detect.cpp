@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTService_Detect.h"
-#include "CharacterAIController.h"
-#include "MyCharacter.h"
+#include "../header/BTService_Detect.h"
+#include "../header/CharacterAIController.h"
+#include "../../Character/header/MyCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTService_Detect::UBTService_Detect()
@@ -16,13 +16,14 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
+	// AI 캐릭터
 	APawn* ComputerCharacter = Cast<ACharacterAIController>(OwnerComp.GetAIOwner())->GetPawn();
 	if (nullptr == ComputerCharacter)
 		return;
 
 	UWorld* World = ComputerCharacter->GetWorld();
 	FVector Center = ComputerCharacter->GetActorLocation();
-	float DetectRadius = 10000.0f;
+	float DetectRadius = 10000.0f;	// 맵 안에 있다면 무조건 탐지 가능하도록 큰 숫자 설정
 	if (nullptr == World)
 		return;
 

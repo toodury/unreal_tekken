@@ -1,13 +1,11 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Countdown.h"
+#include "../header/Countdown.h"
 
-// Sets default values
 ACountdown::ACountdown()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	// 관련 변수 초기화
 
 	CountdownTime = 60;
 	bStartGame = false;
@@ -15,21 +13,10 @@ ACountdown::ACountdown()
 	CountdownBeforeStartAfterEnd = 3;
 }
 
-// Called when the game starts or when spawned
-void ACountdown::BeginPlay()
-{
-	Super::BeginPlay();	
-}
-
-// Called every frame
-void ACountdown::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void ACountdown::CountdownTimer()
 {
+	// 게임이 시작했다면 60초 카운트다운 시작
+
 	if (bStartGame)
 	{
 		CountdownTime--;
@@ -66,6 +53,8 @@ void ACountdown::StartCountdownBeforeStart()
 
 void ACountdown::StopCountdownBeforeStart()
 {
+	// 3초 이후 게임 시작
+
 	GetWorldTimerManager().ClearTimer(TimerHandleBeforeStartAfterEnd);
 	bStartGame = true;
 }
@@ -87,6 +76,8 @@ void ACountdown::StartCountdownAfterEnd()
 
 void ACountdown::StopCountdownAfterEnd()
 {
+	// 3초가 지나면 다음 게임으로
+
 	GetWorldTimerManager().ClearTimer(TimerHandleBeforeStartAfterEnd);
 	bGoNextGame = true;
 }

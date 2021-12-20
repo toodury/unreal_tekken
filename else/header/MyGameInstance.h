@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Countdown.h"
-#include "CharacterEnumClasses.h"
-#include "MyCharacter.h"
+#include "../../Character/header/CharacterEnumClasses.h"
+#include "../../Character/header/MyCharacter.h"
 #include "MyGameInstance.generated.h"
 
 /**
@@ -19,6 +19,7 @@ class TEKKEN_API UMyGameInstance : public UGameInstance
 	
 public:
 
+	// 게임 인스턴스
 	UMyGameInstance();
 
 	// 유저가 캐릭터 선택 화면에서 고른 캐릭터

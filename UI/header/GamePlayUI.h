@@ -8,9 +8,9 @@
 #include "Components/Border.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
-#include "MyGameInstance.h"
-#include "MyCharacter.h"
-#include "tekkenGameModeBase.h"
+#include "../../Else/header/MyGameInstance.h"
+#include "../../Character/header/MyCharacter.h"
+#include "../../Else/header/tekkenGameModeBase.h"
 #include "GamePlayUI.generated.h"
 
 /**
@@ -23,11 +23,13 @@ class TEKKEN_API UGamePlayUI : public UUserWidget
 
 public:
 
+		// 게임 중에 표시될 UI
+
 		// 생성자
 		virtual void NativeConstruct() override;
 
-		void Tick(FGeometry MyGeometry, float DeltaTime);
-		//virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+		//void Tick(FGeometry MyGeometry, float DeltaTime);
+		////virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 		
 		// 이 위젯 내부에서 쓰일 로컬 변수들
 
@@ -100,7 +102,6 @@ public:
 		// 선택된 캐릭터의 체력 Progress Bar를 업데이트 하는 함수. 체력바의 Percent 값을 리턴
 		UFUNCTION()
 			float UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar);
-			//void UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar);
 
 		// 플레이어 캐릭터의 체력 Progress Bar를 업데이트 하는 함수. 체력바의 Percent 값을 리턴
 		UFUNCTION(BlueprintCallable, Category = "Hp")
@@ -202,8 +203,6 @@ public:
 		// 게임의 남은 시간을 업데이트 하는 함수. 남은 시간 값을 리턴
 		UFUNCTION(BlueprintCallable, Category = "Countdown")
 			FText UpdateGameCountdownText();
-		/*UFUNCTION()
-			void UpdateGameCountdownText();*/
 
 
 
@@ -228,8 +227,6 @@ public:
 		// 게임 시작 전 3초 대기 시간을 업데이트하는 함수. bGameStart = false일 때만 남은 시간 리턴
 		UFUNCTION(BlueprintCallable, Category = "Countdown")
 			FText UpdateCountdownBeforeGameText();
-		/*UFUNCTION()
-			void UpdateCountdownBeforeGameText();*/
 
 		// 게임이 끝나고 3초 동안 대기할 타이머가 실행됐는지를 의미하는 bool 변수
 		UPROPERTY()

@@ -23,38 +23,6 @@ enum class EInputKey : uint8 {
 	RightKick UMETA(DisplayName = "RightKick")
 };
 
-//USTRUCT(Atomic)
-//struct FEInputKeyArray {
-//
-//	// AttackMotionTable의 Key로 EInputKey의 배열을 넣기 위해 TArray<EInputKey>를 감싸 만든 구조체
-//
-//	GENERATED_USTRUCT_BODY()
-//
-//public:
-//UPROPERTY()
-//		TArray<EInputKey> EInputKeyArray;
-//
-//	FEInputKeyArray();
-//
-//	FEInputKeyArray(TArray<EInputKey> NewEInputKeyArray)
-//	{
-//		for (int32 i = 0; i < NewEInputKeyArray.Num(); i++)
-//			EInputKeyArray.Emplace(NewEInputKeyArray[i]);
-//	}
-//
-//	bool operator==(FEInputKeyArray obj)
-//	{
-//		if (obj.EInputKeyArray.Num() != EInputKeyArray.Num())
-//			return false;
-//		for (int32 i = 0; i < obj.EInputKeyArray.Num(); i++)
-//		{
-//			if (EInputKeyArray[i] != obj.EInputKeyArray[i])
-//				return false;
-//		}
-//		return true;
-//	}
-//};
-
 // 캐릭터가 맞을 수 있는 부위
 UENUM(BlueprintType)
 enum class EHitPosition : uint8 {
@@ -66,6 +34,7 @@ enum class EHitPosition : uint8 {
 	Stomach UMETA(DisplayName = "Stomach")
 };
 
+// 게임에 존재하는 캐릭터 모음
 // 맨 마지막은 무조건 Random으로 설정
 UENUM(BlueprintType)
 enum class ECharacters : uint8 {
@@ -76,7 +45,6 @@ enum class ECharacters : uint8 {
 
 // 모든 캐릭터들의 공격 모션 모음
 // 캐릭터이름__공격모션
-// 캐릭터의 첫번째 공격 모션이라면 맨뒤에 _Fisrt, 마지막이라면 _Last를 붙여야 함
 UENUM(BlueprintType)
 enum class EAttackMotion : uint8 {
 	Idle UMETA(DisplayName = "Idle"),
@@ -91,9 +59,4 @@ enum class EAttackMotion : uint8 {
 	Ninja__LowRightThaiKick UMETA(DisplayName = "Ninja__LowRightThaiKick"),
 	Ninja__CutDownKick UMETA(DisplayName = "Ninja__CutDownKick"),
 	Ninja__WheelKick UMETA(DisplayName = "Ninja__WheelKick")
-};
-
-class TEKKEN_API CharacterEnumClasses
-{
-		
 };

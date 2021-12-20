@@ -1,25 +1,14 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PlayMapLevelScriptActor.h"
+#include "../header/PlayMapLevelScriptActor.h"
 #include "Kismet/GameplayStatics.h"
-#include "MyCharacter.h"
-#include "Countdown.h"
-
-APlayMapLevelScriptActor::APlayMapLevelScriptActor()
-{
-
-}
-
-void APlayMapLevelScriptActor::BeginPlay()
-{
-	Super::BeginPlay();
-
-
-}
+#include "../../Character/header/MyCharacter.h"
+#include "../header/Countdown.h"
 
 void APlayMapLevelScriptActor::PlayMapBeginPlay()
 {
+	// 게임모드 & 게임 인스턴스 가져오기
 	GameMode = Cast<AtekkenGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 	GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
@@ -35,7 +24,6 @@ void APlayMapLevelScriptActor::PlayMapBeginPlay()
 		GameMode->SpawnCharacter(PlayerCharacterToSpawn, PlayerCharacterSpawnTransform, SpawnedPlayerCharacter);
 
 		GameInstance->PlayerCharacter = Cast<AMyCharacter>(SpawnedPlayerCharacter);
-		//GameInstance->PlayerCharacter->bIsControlledByAI = false;
 
 		// 컴퓨터 캐릭터 스폰
 		ECharacters ComputerCharacterToSpawn = static_cast<ECharacters>(GameInstance->CurrentLevel - 1);
@@ -49,7 +37,6 @@ void APlayMapLevelScriptActor::PlayMapBeginPlay()
 		GameInstance->ComputerCharacter = Cast<AMyCharacter>(SpawnedComputerCharacter);
 
 		// Countdown 액터 스폰
-		//ACountdown* Countdown = Cast<ACountdown>(GetWorld()->SpawnActor(ACountdown::StaticClass(), NAME_None, FVector(0.0f, 0.0f, -2000.0f)));
 		ACountdown* Countdown = Cast<ACountdown>(GetWorld()->SpawnActor<ACountdown>(FVector(0.0f, 0.0f, -2000.0f), FRotator(0.0f, 0.0f, 0.0f)));
 		GameInstance->CountdownActor = Countdown;
 		GameInstance->CountdownActor->StartCountdownBeforeStart();

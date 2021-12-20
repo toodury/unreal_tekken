@@ -8,8 +8,8 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/Border.h"
-#include "tekkenGameModeBase.h"
-#include "MyGameInstance.h"
+#include "../../Else/header/tekkenGameModeBase.h"
+#include "../../Else/header/MyGameInstance.h"
 #include "GameStartMenu.generated.h"
 
 /**
@@ -21,8 +21,13 @@ class TEKKEN_API UGameStartMenu : public UUserWidget
 	GENERATED_BODY()
 
 public:
+
+	// 닉네임 입력 & 캐릭터 선택 UI
+
 	// 생성자
 	virtual void NativeConstruct() override;
+
+
 
 	// 이 위젯 내부에서 쓰일 로컬 변수들
 
@@ -37,7 +42,6 @@ public:
 	// 현재 스폰되어 있는 캐릭터
 	UPROPERTY()
 		APawn* CurrentDisplayedCharacter;
-
 
 
 
@@ -61,7 +65,7 @@ public:
 	UPROPERTY()
 		TArray<FString> InvalidNicknameArray;
 
-	// 플레이어 닉네임 유효성 검사
+	// 플레이어 닉네임 유효성 검사 함수
 	UFUNCTION(BlueprintCallable, Category = "PlayerNickname")
 		bool IsNicknameValid(FString Nickname);
 
@@ -72,10 +76,6 @@ public:
 	// 닉네임을 입력하는 텍스트 박스에 문자가 입력될 때마다 실행될 함수
 	UFUNCTION(BlueprintCallable, Category = "GameStartMenu")
 		void PlayerNicknameInputTextBoxOnChange(const FText& Text);
-
-	//// 닉네임을 입력하는 텍스트 박스에서 포커스가 아웃됐을 때 실행될 함수
-	//UFUNCTION()
-	//	void PlayerNicknameInputTextBoxOnCommitted(const FText& Text, ETextCommit::Type InCommitType);
 
 
 

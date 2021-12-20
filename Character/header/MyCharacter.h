@@ -20,7 +20,7 @@ class TEKKEN_API AMyCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+	// 모든 캐릭터들이 상속받는 공통 캐릭터 클래스
 	AMyCharacter();
 
 protected:
@@ -43,22 +43,22 @@ public:
 	// Character Detail (각 캐릭터 클래스에서 초기화)
 
 	// 캐릭터 아이디
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Detail")
+	UPROPERTY(BlueprintReadOnly, Category = "Character Detail")
 		ECharacters CharacterID;
 
 	// 캐릭터 종류 이름
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Detail")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Detail")
 		FName CharacterName;
 
 	// 캐릭터 최대 공격 범위
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Detail")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Detail")
 		int32 MaxAttackRange;
 
 	// 캐릭터 최소 공격 범위
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Detail")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Detail")
 		int32 MinAttackRange;
 
-	// 캐릭터 디테일 변수 초기화
+	// 캐릭터 디테일 변수 초기화. 각 캐릭터 클래스에서 정의
 		virtual void InitializeCharacterDetail();
 
 	// 캐릭터의 enum class를 키, 캐릭터의 이름을 FName 값으로 갖는 해시 테이블. 각 캐릭터 클래스에서 추가
@@ -112,7 +112,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		USphereComponent* RightFootCollision;
 
-	// 좌우 손발에 붙일 Sphere Collision Component를 생성하고 매쉬에 Attach하는 함수. 각 캐릭터 클래스 생성자에서 정의
+	// 좌우 손발에 붙일 Sphere Collision Component를 생성하고 이벤트 함수를 바인딩하는 함수
 	UFUNCTION()
 		void InitializeSphereCollisionComponents();
 
@@ -143,6 +143,7 @@ public:
 
 
 	// Particle Component
+	// 상대 공격 시 불꽃이 튀게 하기 위한 용도
 
 	// 왼손에 붙일 Particle Component
 	UPROPERTY(VisibleAnywhere)
@@ -160,7 +161,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		UParticleSystemComponent* RightFootParticleSystem;
 
-	// 좌우 손발에 붙일 Particle System Component를 생성하고 이를 Sphere Collision Component에 Attach하는 함수. 각 캐릭터 클래스 생성자에서 정의
+	// 좌우 손발에 붙일 Particle System Component를 생성하고 이를 Sphere Collision Component에 Attach하는 함수
 	UFUNCTION()
 		void InitializeParticleSystemComponents();
 
@@ -189,18 +190,18 @@ public:
 		int32 MaxHp;
 
 	// 캐릭터의 현재 체력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hp")
+	UPROPERTY(BlueprintReadWrite, Category = "Hp")
 		int32 CurrentHp;
 
-	// 체력 변화량을 받아서 남은 체력 업데이트. GameOver = true이면 더 이상 Hp가 변하지 않음
+	// 체력 변화량을 받아서 남은 체력 업데이트. bGameOver = true이면 더 이상 Hp가 변하지 않음
 	UFUNCTION(BlueprintCallable, Category = "Hp")
-	void UpdateHpLeft(int32 HpDiff);
+		void UpdateHpLeft(int32 HpDiff);
 
-	// 게임 종료 여부. 게임이 종료되면 더 이상 Hp가 변하지 않음
+	// 게임 종료 여부를 의미하는 bool 변수. 게임이 종료되면 더 이상 Hp가 변하지 않음
 	UPROPERTY(BlueprintReadWrite, Category = "Hp")
 		bool bGameOver;
 
-	// 캐릭터가 죽었는지 여부. 캐릭터의 체력이 0이 되면 true
+	// 캐릭터가 죽었는지 여부를 의미하는 bool 변수. 캐릭터의 체력이 0이 되면 true로 설정
 	UPROPERTY(BlueprintReadWrite, Category = "Hp")
 		bool bIsDead;
 
@@ -208,110 +209,130 @@ public:
 	
 	// Locomotion
 
-	bool bMoving;
+	// 캐릭터가 이동하고 있는지를 의미하는 bool 변수
+	UPROPERTY()
+		bool bMoving;
+
+	// 캐릭터가 뛰고 있는지를 의미하는 bool 변수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Locomotion")
-	bool bRunning;
-	bool bDoubleClicked;
-	float DoubleClickTime;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Locomotion")
-	EMoveDirection MoveDirection;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Locomotion")
-	EMoveDirection PreviousMovingDirection;
-	void MoveForward(float AxisValue);
-	void MoveRight(float AxisValue);
-	void StartRun();
-	void StopRun();
-	void StartJump();
-	void StopJump();
-	void MakeIdle();
+		bool bRunning;
+
+	// 같은 이동 키가 두 번 연속 눌렸는지를 의미하는 bool 변수. true라면 캐릭터 달리기 시작
+	UPROPERTY()
+		bool bMovingKeyDoubleClicked;
+
+	// 이동 키가 눌린 이후 시간. 0.3초 안에 다시 눌러야 달리기 시작
+	UPROPERTY()
+		float MovingKeyDoubleClickTime;
+
+	// 캐릭터가 이동하고 있는 방향
+	UPROPERTY(BlueprintReadOnly, Category = "Locomotion")
+		EMoveDirection MoveDirection;
+
+	// 캐릭터가 이전에 이동했던 방향
+	UPROPERTY(BlueprintReadOnly, Category = "Locomotion")
+		EMoveDirection PreviousMovingDirection;
+
+	// 캐릭터를 앞뒤로 이동시키는 함수
+	UFUNCTION()
+		void MoveForward(float AxisValue);
+
+	// 캐릭터를 좌우로 이동시키는 함수
+	UFUNCTION()
+		void MoveRight(float AxisValue);
+
+	// 캐릭터 달리기 시작 함수
+	UFUNCTION()
+		void StartRun();
+
+	// 캐릭터 달리기 종료 함수
+	UFUNCTION()
+		void StopRun();
+
+	// 캐릭터 점프 시작 함수
+	UFUNCTION()
+		void StartJump();
+
+	// 캐릭터 점프 종료 함수
+	UFUNCTION()
+		void StopJump();
+
+	// 캐릭터를 Idle 상태로 만드는 함수
+	UFUNCTION()
+		void MakeIdle();
 
 
 
 	// Attack
 
-	// 캐릭터가 가진 모든 공격 패턴을 가지고 있는 테이블
+	// 입력 키의 조합을 키, 그에 해당하는 공격 모션을 값으로 가지는 해시 테이블
 	UPROPERTY()
-		//TMap<FEInputKeyArray, FString> AttackMotionTable;
-		//TMap<FString, FString> AttackMotionTable;
 		TMap<FString, EAttackMotion> AttackMotionTable;
 
-	// 현재 공격 패턴이 활성화되어 있는지 bool 변수로 가지고 있는 테이블
+	// 공격 모션을 키, 해당 공격 모션이  활성화되어 있는지 bool 변수를 값으로 가지고 있는 해시 테이블
 	UPROPERTY()
-		//TMap<FString, bool> AttackMotionBoolTable;
 		TMap<EAttackMotion, bool> AttackMotionBoolTable;
 
-	// 공격 패턴마다 데미지 저장 테이블
+	// 공격 모션을 키, 해당 공격 모션의 데미지를 값으로 가지고 있는 해시 테이블
 	UPROPERTY()
-		//TMap<FString, float> AttackMotionDamageTable;
-		TMap<EAttackMotion, float> AttackMotionDamageTable;
+		TMap<EAttackMotion, int32> AttackMotionDamageTable;
 
-	// 이후 공격 콤보가 없는 공격 패턴 저장 배열
+	// 추가적인 공격 콤보가 없는 공격 모션들을 저장한 배열. 이에 해당하는 공격 모션이 나올 시 입력 키 스택을 초기화
 	UPROPERTY()
-		//TArray<FString> FinalAttackMotions;
 		TArray<EAttackMotion> FinalAttackMotions;
 
-	// 공격 테이블과 bool 테이블, 데미지 테이블 초기화
+	// 공격 모션, bool, 데미지 테이블과 FinalAttackMotions 배열 초기화. 각 캐릭터 클래스에서 정의
 		virtual void InitializeAttackTable();
 
-	// 블루프린트에서 AttackMotionBoolTable의 value를 가져오기 위한 함수
+	// 애니메이션 블루프린트에서 AttackMotionBoolTable의 값을 가져오기 위한 함수. AnimMyCharacter 클래스에서 호출
 	UFUNCTION(BlueprintCallable, Category = "Attack")
-		//bool GetAttackMotionBoolTable(FString AttackMotion);
 		bool GetAttackMotionBoolTable(EAttackMotion AttackMotion);
 
-	// 블루프린트에서 AttackMotionDamageTable의 value를 가져오기 위한 함수
-	UFUNCTION(BlueprintCallable, Category = "Attack")
-		//float GetAttackMotionDamageTable(FString AttackMotion);
-		float GetAttackMotionDamageTable(EAttackMotion AttackMotion);
-
 	// 가장 최근 실행된 공격 모션
-	UPROPERTY(BlueprintReadOnly, Category = "Attack")
-		//FString CurrentAttackMotion;
+	UPROPERTY(BlueprintReadWrite, Category = "Attack")
 		EAttackMotion CurrentAttackMotion;
 
-	// 공격 애니메이션에서 Notify 이벤트를 통해 공격 설정
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	// 공격 애니메이션에서 애님 노티파이 이벤트를 통해 현재 캐릭터가 공격 중인지를 설정하는 bool 변수
+	UPROPERTY(BlueprintReadWrite, Category = "Attack")
 		bool bAttacking;
 
-	// 연속 공격을 위해 만든 키를 누른 후에 흐른 시간 변수
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	// 공격 키를 누른 후에 흐른 시간. 공격 콤보를 구현하기 위해 사용
+	UPROPERTY(BlueprintReadWrite, Category = "Attack")
 		float KeyClickInterval;
 
-	// 아무 키나 누른지 0.5초가 지나지 않았을 때 true. 연속 공격을 위해 사용
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	// 아무 키나 누른지 0.5초가 지나지 않았을 때 true로 설정되는 bool 변수. 공격 콤보를 구현하기 위해 사용
+	UPROPERTY(BlueprintReadWrite, Category = "Attack")
 		bool bAnyKeyClicked;
 
-	// 지금까지 들어온 입력키를 저장한 배열
+	// 지금까지 들어온 입력 키를 저장한 배열. 스택으로서 작동
 	UPROPERTY()
-		//TArray<EInputKey> InputKeyArray;
 		TArray<FString> InputKeyArray;
 
-	// 사용자가 누른 키를 배열에 저장 
+	// 사용자가 누른 입력 키를 배열에 저장하는 함수
 	UFUNCTION()
-		//void AddKeyToInputArray(EInputKey PressedKeyName);
 		void AddKeyToInputArray(FString PressedKeyName);
 
 	// 아무 키나 눌렀을 때 수행해야 하는 함수
 	UFUNCTION()
-		//void WhenAnyKeyClicked(EInputKey PressedKeyName);
 		void WhenAnyKeyClicked(FString PressedKeyName);
 
 	// 최종 공격 모션을 결정하는 함수
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void DetermineAttackMotion();
 
-	// H 키가 눌렸을 때 호출되는 함수
+	// 왼쪽 주먹 공격 키가 눌렸을 때 호출되는 함수
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void WhenLeftPunchKeyClicked();
 
-	// J 키가 눌렸을 때 호출되는 함수
+	// 오른쪽 주먹 공격 키가 눌렸을 때 호출되는 함수
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void WhenRightPunchKeyClicked();
 
-	// K키가 눌렸을 때 호출되는 함수
+	// 왼쪽 다리 공격 키가 눌렸을 때 호출되는 함수
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void WhenLeftKickKeyClicked();
 
-	// L키가 눌렸을 때 호출되는 함수
+	// 오른쪽 다리 공격 키가 눌렸을 때 호출되는 함수
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void WhenRightKickKeyClicked();
 
@@ -323,45 +344,31 @@ public:
 	UPROPERTY()
 		bool bIsHit;
 
-	// 캐릭터가 가진 공격 패턴마다 상대의 어느 부위를 가격하는지 정의한 테이블
+	// 캐릭터가 가진 공격 모션마다 상대의 어느 부위를 가격하는지 정의한 테이블
 	UPROPERTY()
-		//TMap<FString, EHitPosition> AttackMotionHitPositionTable;
 		TMap<EAttackMotion, EHitPosition> AttackMotionHitPositionTable;
 
-	// 캐릭터가 가진 공격 패턴마다 좌우 손발 중 어느 콜리전 컴포넌트로 상대를 가격하는지 기록한 테이블
+	// 캐릭터가 가진 공격 모션마다 좌우 손발 중 어느 콜리전 컴포넌트로 상대를 가격하는지 기록한 테이블
 	UPROPERTY()
-		//TMap<FString, USphereComponent*> AttackMotionCollisionComponentTable;
 		TMap<EAttackMotion, USphereComponent*> AttackMotionCollisionComponentTable;
 
-	// 캐릭터가 어느 부위를 맞았는지 기록한 테이블 (MyCharacter에서 정의)
+	// 캐릭터가 어느 부위를 맞았는지 부위를 키, bool 변수를 값으로 가지는 해시 테이블
 	UPROPERTY()
 		TMap<EHitPosition, bool> HitPositionBoolTable;
 
-	// 블루프린트에서 HitPositionBoolTable의 value를 가져오기 위한 함수
+	// 애니메이션 블루프린트에서 HitPositionBoolTable의 값을 가져오기 위한 함수. AnimMyCharacter 클래스에서 호출
 	UFUNCTION(BlueprintCallable, Category = "Hit")
 		bool GetHitPositionBoolTable(EHitPosition HitPosition);
 
-	// AttackMotionHitPositionTable과 HitPositionBoolTable을 초기화 하는 함수
+	// Hit 관련 테이블들을 초기화하는 함수
+	// AttackMotionCollisionComponentTable과 AttackMotionHitPositionTable은 각 캐릭터 클래스에서 정의
 		virtual void InitializeHitTable();
 
 
 
 	// AI
 
-	//// 캐릭터가 AI에 의해 컨트롤되고 있는지 여부
-	//UPROPERTY(BlueprintReadWrite, Category = "AI")
-	//	bool bIsControlledByAI;
-
 	// AI 캐릭터 랜덤 공격 함수. 좌우 손발 4가지 키를 랜덤으로 선택해서 입력. 만약 캐릭터에 따라 재정의가 필요할 경우에만 그 캐릭터 클래스에서 재정의
 	UFUNCTION()
 		virtual void RandomAttack();
-
-	// AI 캐릭터가 공격을 끝마친 후 실행되는 함수
-	// 이거 나중에 없애 왜 만들었는지 모르겠음
-	UFUNCTION(BlueprintCallable, Category = "AI")
-		void AIStopAttack();
-
-	FTimerHandle BetweenAttackTimerHandle;
-
-	bool IsBetweenAttackTimerStarted;
 };

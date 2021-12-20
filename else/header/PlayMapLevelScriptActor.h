@@ -17,9 +17,6 @@ class TEKKEN_API APlayMapLevelScriptActor : public ALevelScriptActor
 	GENERATED_BODY()
 
 public:
-    APlayMapLevelScriptActor();
-
-    virtual void BeginPlay() override;
 
     // 게임 모드
     UPROPERTY()

@@ -10,20 +10,6 @@
  * 
  */
 
-/*UENUM(BlueprintType)
-enum class EAttackMotion : uint8 {
-	LeftJap UMETA(DisplayName = "LeftJap"),
-	LeftHook UMETA(DisplayName = "LeftHook"),
-	SpinningBackfist UMETA(DisplayName = "SpinningBackfist"),
-	RightCross UMETA(DisplayName = "RightCross"),
-	RightUppercut UMETA(DisplayName = "RightUppercut"),
-	ObliqueKick UMETA(DisplayName = "ObliqueKick"),
-	StraightKick UMETA(DisplayName = "StraightKick"),
-	LowRightThaiKick UMETA(DisplayName = "LowRightThaiKick"),
-	CutDownKick UMETA(DisplayName = "CutDownKick"),
-	WheelKick UMETA(DisplayName = "WheelKick")
-};*/
-
 UCLASS()
 class TEKKEN_API ANinjaCharacter : public AMyCharacter
 {
@@ -31,6 +17,7 @@ class TEKKEN_API ANinjaCharacter : public AMyCharacter
 
 public:
 
+	// 닌자 캐릭터
 	ANinjaCharacter();
 
 	// Character Detail

@@ -16,6 +16,8 @@ class TEKKEN_API UAnimNotify_EndAttack : public UAnimNotify
 	
 public:
 	
+	// 캐릭터들의 공격 애니메이션에서 사용할 애님 노티파이
+	// 공격 끝 의미
 	FString GetNotifyName_Implementation() const;
 
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;

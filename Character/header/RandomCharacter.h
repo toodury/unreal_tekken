@@ -13,22 +13,22 @@ class TEKKEN_API ARandomCharacter : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
+
+	// ·£´ý Ä³¸¯ÅÍ
 	ARandomCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+//protected:
+//	// Called when the game starts or when spawned
+//	virtual void BeginPlay() override;
+//
+//public:	
+//	// Called every frame
+//	virtual void Tick(float DeltaTime) override;
+//
+//	// Called to bind functionality to input
+//	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// ·£´ýÀ» °ñ¶úÀ» ¶§ ¶ç¿ï ¹°À½Ç¥
 	UPROPERTY()
 	UTextRenderComponent* RandomCharacter;
-
 };

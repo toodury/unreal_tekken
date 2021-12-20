@@ -1,24 +1,24 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MyCharacter.h"
+#include "../header/MyCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "CharacterAIController.h"
-#include "BTTask_Attack.h"
+#include "../../AI/header/CharacterAIController.h"
+#include "../../AI/header/BTTask_Attack.h"
 #include "Kismet/GameplayStatics.h"
 
 #include <random>
 
+// static 변수 초기화
 TMap<ECharacters, FName> AMyCharacter::CharacterNameMap;
 
-// Sets default values
 AMyCharacter::AMyCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	// Sphere Collision Component의 소켓 이름 초기화
+	// Sphere Collision Component의 소켓 이름 초기화. 각 캐릭터 클래스에서 재정의
 	LeftHandSocketName = FName(TEXT("None"));
 	RightHandSocketName = FName(TEXT("None"));
 	LeftFootSocketName = FName(TEXT("None"));
@@ -33,44 +33,28 @@ AMyCharacter::AMyCharacter()
 	// Locomotion 변수 초기화
 	bMoving = false;
 	bRunning = false;
-	DoubleClickTime = 0.0f;
+	MovingKeyDoubleClickTime = 0.0f;
 
 	// Attack 변수 초기화
 	KeyClickInterval = 0.0f;
-	//CurrentAttackMotion = TEXT("");
-	//AttakMotionCollisionComponentTable.Emplace(TEXT(""), nullptr);
-	// 이걸 왜 썼냐면 Sphere On Collision 에서 CurrentAttackMotion이 ""일 때 
-	// 테이블에 그거에 해당하는 값이 없어서 어서트가 뜨기 때문
 	CurrentAttackMotion = EAttackMotion::Idle;
 
 	// Hit 변수 초기화
 	bIsHit = false;
 
-	// AI 변수 초기화
-	//bIsControlledByAI = true;
-
 	// 각종 컴포넌트 초기화
 	InitializeComponents();
-
-	//// 카메라 컴포넌트 초기화
-	//InitializeCameraComponent();
-
-	//// Mesh Component 초기화
-	//InitializeMeshComponent();
-
-	//// Capsule Component 초기화
-	//InitializeCapsuleComponent();
 
 	// 캐릭터 AI 컨트롤러 설정
 	AIControllerClass = ACharacterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
-// Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// 플레이어가 해당 캐릭터 조종
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
@@ -79,19 +63,23 @@ void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bDoubleClicked)
-		DoubleClickTime += DeltaTime;
+	// 달리기 구현을 위한 변수
+	if (bMovingKeyDoubleClicked)
+		MovingKeyDoubleClickTime += DeltaTime;
 
-	if (DoubleClickTime > 0.3f)
+	// 0.3초 동안 이동 키를 다시 누르지 않는다면 해당 변수들 초기화
+	if (MovingKeyDoubleClickTime > 0.3f)
 	{
-		DoubleClickTime = 0.0f;
+		MovingKeyDoubleClickTime = 0.0f;
 		bMoving = false;
-		bDoubleClicked = false;
+		bMovingKeyDoubleClicked = false;
 	}
 
+	// 공격 콤보 구현을 위한 변수
 	if (bAnyKeyClicked)
 		KeyClickInterval += DeltaTime;
 
+	// 0.7초 동안 공격 키를 누르지 않았다면 해당 변수들 초기화하고 캐릭터를 Idle 상태로 설정
 	if (KeyClickInterval > 0.7f)
 	{
 		bAnyKeyClicked = false;
@@ -106,27 +94,34 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// 이동 키
 	InputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
 	InputComponent->BindAction("Run", IE_Pressed, this, &AMyCharacter::StartRun);
 	InputComponent->BindAction("Run", IE_Released, this, &AMyCharacter::StopRun);
-
+	
+	// 마우스 이동을 통한 화면 회전
 	InputComponent->BindAxis("Turn", this, &AMyCharacter::AddControllerYawInput);
 	InputComponent->BindAxis("LookUp", this, &AMyCharacter::AddControllerPitchInput);
 
+	// 공격 키
 	InputComponent->BindAction("LeftPunch", IE_Pressed, this, &AMyCharacter::WhenLeftPunchKeyClicked);
 	InputComponent->BindAction("RightPunch", IE_Pressed, this, &AMyCharacter::WhenRightPunchKeyClicked);
 	InputComponent->BindAction("LeftKick", IE_Pressed, this, &AMyCharacter::WhenLeftKickKeyClicked);
 	InputComponent->BindAction("RightKick", IE_Pressed, this, &AMyCharacter::WhenRightKickKeyClicked);
 
+	// 점프 키
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AMyCharacter::StartJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AMyCharacter::StopJump);
 }
 
 void AMyCharacter::CharacterClassCommonConstructor()
 {
-	// 해시 테이블에 캐릭터 이름 추가
+	// 캐릭터 이름을 저장한 해시 테이블에 캐릭터 이름 추가
 	CharacterNameMap.Emplace(CharacterID, CharacterName);
+
+	// 공격 모션마다 해당하는 콜리젼 컴포넌트를 저장한 해시 테이블에 기본값 추가
+	AttackMotionCollisionComponentTable.Emplace(EAttackMotion::Idle, nullptr);
 
 	// 좌우 손발의 Sphere Collision Component를 매쉬에 Attach
 	AttachCollisionComponentsToMesh();
@@ -134,7 +129,7 @@ void AMyCharacter::CharacterClassCommonConstructor()
 
 void AMyCharacter::InitializeCharacterDetail()
 {
-
+	// 각 캐릭터 클래스에서 재정의
 }
 
 void AMyCharacter::InitializeComponents()
@@ -157,6 +152,9 @@ void AMyCharacter::InitializeComponents()
 
 void AMyCharacter::InitializeCameraComponent()
 {
+	// 카메라 컴포넌트를 설정하고 캐릭터의 캡슐 컴포넌트에 부착
+	// 캐릭터의 뒷상단에 카메라 위치
+
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	if (Camera)
 	{
@@ -169,6 +167,8 @@ void AMyCharacter::InitializeCameraComponent()
 
 void AMyCharacter::InitializeMeshComponent()
 {
+	// 캐릭터가 앞을 바라보도록 설정
+
 	USkeletalMeshComponent* MyMesh = GetMesh();
 	if (MyMesh)
 	{
@@ -180,7 +180,7 @@ void AMyCharacter::InitializeMeshComponent()
 void AMyCharacter::InitializeSphereCollisionComponents()
 {
 	// 해당 Mesh의 좌우 손발에 Attach할 Sphere Collision Component 생성
-	// 이후 각종 설정 초기화
+	// 이후 각종 설정 초기화 후 이벤트 함수 바인딩
 
 	// 왼손
 	LeftHandCollision = CreateDefaultSubobject<USphereComponent>(TEXT("LeftHandCollision"));
@@ -221,15 +221,20 @@ void AMyCharacter::InitializeSphereCollisionComponents()
 
 void AMyCharacter::OnSphereCollisionComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// 오버랩된 컴포넌트가 상대 액터의 캡슐 컴포넌트이고
-	// 현재 공격 모션에 맞는 콜리전 컴포넌트가 부딪힌 거고
-	// 자기 자신의 캡슐 컴포넌트와 부딪힌 게 아니라면
+	// 조건
+	// 1. 오버랩된 컴포넌트가 상대 액터의 캡슐 컴포넌트
+	// 2. 자기 자신의 캡슐 컴포넌트와 부딪힌 게 아님
+	// 3. 현재 캐릭터가 공격 중 (애님 노티파이 활용)
+	// 4. 현재 공격 모션에 맞는 콜리전 컴포넌트가 부딪힘
+	// 효과
 	// 1. 상대 캐릭터의 HP를 깎음
 	// 2. 해당 콜리전 컴포넌트의 파티클 시스템 활성화
+
 	AMyCharacter* OtherCharacter = Cast<AMyCharacter>(OtherActor);
 	
 	if (OtherCharacter)
 	{
+		// 현재 공격 모션에 따른 콜리전 컴포넌트 설정
 		USphereComponent* CollisionComponent;
 		if (AttackMotionCollisionComponentTable.Contains(CurrentAttackMotion))
 			CollisionComponent = AttackMotionCollisionComponentTable[CurrentAttackMotion];
@@ -240,7 +245,6 @@ void AMyCharacter::OnSphereCollisionComponentBeginOverlap(UPrimitiveComponent* O
 		{
 			OtherCharacter->UpdateHpLeft(-AttackMotionDamageTable[CurrentAttackMotion]);
 			Cast<UParticleSystemComponent>((OverlappedComp->GetAttachChildren())[0])->Activate(true);
-			//UE_LOG(LogTemp, Log, TEXT("CurrentAttackMotion : %s"), *CurrentAttackMotion);
 		}
 	}
 }
@@ -262,10 +266,10 @@ void AMyCharacter::AttachCollisionComponentsToMesh()
 
 void AMyCharacter::InitializeParticleSystemComponents()
 {
-	// 블루프린트에서 매쉬에 맞는 소켓 이름을 넣어줘야 Sphere Collision Component 생성
 	// 해당 부위에 Sphere Collision Component가 생성 되었어야 Particle System Component 생성
 	// 생성 이후 좌우 손발의 Sphere Collision Component에 Attach
 
+	// 왼손
 	if (LeftHandCollision)
 	{
 		LeftHandParticleSystem = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LeftHandParticleSystem"));
@@ -279,6 +283,7 @@ void AMyCharacter::InitializeParticleSystemComponents()
 		}
 	}
 
+	// 오른손
 	if (RightHandCollision)
 	{
 		RightHandParticleSystem = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("RightHandParticleSystem"));
@@ -289,6 +294,7 @@ void AMyCharacter::InitializeParticleSystemComponents()
 		RightHandParticleSystem->SetAutoActivate(false);
 	}
 
+	// 왼발
 	if (LeftFootCollision)
 	{
 		LeftFootParticleSystem = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LeftFootParticleSystem"));
@@ -299,6 +305,7 @@ void AMyCharacter::InitializeParticleSystemComponents()
 		LeftFootParticleSystem->SetAutoActivate(false);
 	}
 
+	// 오른발
 	if (RightFootCollision)
 	{
 		RightFootParticleSystem = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("RightFootParticleSystem"));
@@ -312,14 +319,22 @@ void AMyCharacter::InitializeParticleSystemComponents()
 
 void AMyCharacter::OnCapsuleComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 조건
+	// 1. 자기 자신과 부딪힌 게 아님
+	// 2. 상대 공격 모션에 맞는 콜리전 컴포넌트와 부딪힘
+	// 3. 상대 캐릭터가 공격 중
+	// 효과
+	// 1. 상대 공격 모션에 맞는 부위가 맞았다고 설정
+	// 2. bIsHit 변수 true로 설정
+
 	auto OtherCharacter = Cast<AMyCharacter>(OtherActor);
 
 	if (OtherCharacter)
 	{
-		//FString AttckMotion = OtherCharacter->CurrentAttackMotion;	// 상대 캐릭터의 공격 모션
-		EAttackMotion AttackMotion = OtherCharacter->CurrentAttackMotion;
-		bool bOtherCharacterAttacking = OtherCharacter->bAttacking;
-
+		EAttackMotion AttackMotion = OtherCharacter->CurrentAttackMotion;	// 상대 캐릭터의 공격 모션
+		bool bOtherCharacterAttacking = OtherCharacter->bAttacking;	// 상대 캐릭터가 공격 중인지
+		
+		// 상대 공격 모션에 맞는 콜리전 컴포넌트
 		USphereComponent* CollisionComponent;
 		if (OtherCharacter->AttackMotionCollisionComponentTable.Contains(AttackMotion))
 			CollisionComponent = OtherCharacter->AttackMotionCollisionComponentTable[AttackMotion];
@@ -328,7 +343,6 @@ void AMyCharacter::OnCapsuleComponentBeginOverlap(UPrimitiveComponent* Overlappe
 
 		if (OtherCharacter != this && Cast<USphereComponent>(OtherComp) == CollisionComponent && bOtherCharacterAttacking)
 		{
-			UE_LOG(LogTemp, Log, TEXT("Hit"));
 			HitPositionBoolTable[OtherCharacter->AttackMotionHitPositionTable[AttackMotion]] = true;
 			bIsHit = true;
 		}
@@ -350,6 +364,8 @@ void AMyCharacter::OnCapsuleComponentEndOverlap(UPrimitiveComponent* OverlappedC
 
 void AMyCharacter::InitializeCapsuleComponent()
 {
+	// 캡슐 컴포넌트 초기화 이후 이벤트 함수 바인딩
+
 	UCapsuleComponent* MyCapsuleComponent = GetCapsuleComponent();
 	MyCapsuleComponent->SetGenerateOverlapEvents(true);
 	MyCapsuleComponent->SetVisibility(false);
@@ -360,7 +376,6 @@ void AMyCharacter::InitializeCapsuleComponent()
 	MyCapsuleComponent->OnComponentEndOverlap.AddDynamic(this, &AMyCharacter::OnCapsuleComponentEndOverlap);
 }
 
-//bool AMyCharacter::GetAttackMotionBoolTable(FString AttackMotion)
 bool AMyCharacter::GetAttackMotionBoolTable(EAttackMotion AttackMotion)
 {
 	if (AttackMotionBoolTable.Contains(AttackMotion))
@@ -369,17 +384,11 @@ bool AMyCharacter::GetAttackMotionBoolTable(EAttackMotion AttackMotion)
 		return false;
 }
 
-//float AMyCharacter::GetAttackMotionDamageTable(FString AttackMotion)
-float AMyCharacter::GetAttackMotionDamageTable(EAttackMotion AttackMotion)
-{
-	if (AttackMotionDamageTable.Contains(AttackMotion))
-		return AttackMotionDamageTable[AttackMotion];
-	else
-		return 0.0f;
-}
-
 void AMyCharacter::UpdateHpLeft(int32 HpDiff)
 {
+	// 게임이 끝났을 때는 체력 업데이트 불가
+	// 체력이 최대 체력을 넘어가거나 0밑으로 떨어질 수는 없음
+
 	if (!bGameOver)
 	{
 		CurrentHp += HpDiff;
@@ -398,6 +407,9 @@ void AMyCharacter::UpdateHpLeft(int32 HpDiff)
 
 void AMyCharacter::MoveForward(float AxisValue)
 {
+	// 앞 뒤로 이동
+	// 뛸 때는 속도를 3배로 설정
+
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
 
 	if (bRunning)
@@ -421,9 +433,12 @@ void AMyCharacter::MoveForward(float AxisValue)
 
 void AMyCharacter::MoveRight(float AxisValue)
 {
+	// 좌우로 이동
+	// 뛸 때는 속도를 3배로 설정
+
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 
-	if (bMoving && bDoubleClicked)
+	if (bMoving && bMovingKeyDoubleClicked)
 	{
 		AddMovementInput(Direction, AxisValue * 3.0f);
 	}
@@ -454,7 +469,7 @@ void AMyCharacter::StartRun()
 void AMyCharacter::StopRun()
 {
 	bRunning = false;
-	bDoubleClicked = true;
+	bMovingKeyDoubleClicked = true;
 }
 
 void AMyCharacter::StartJump()
@@ -469,10 +484,11 @@ void AMyCharacter::StopJump()
 
 void AMyCharacter::MakeIdle()
 {
+	// 점프 상태 해제
 	bPressedJump = false;
 
 	// 입력 키 스택 비우기
-	//InputKeyArray.Empty();
+	InputKeyArray.Empty();
 
 	// 모든 공격 모션 상태 해제
 	for (auto& Elem : AttackMotionBoolTable)
@@ -483,18 +499,18 @@ void AMyCharacter::MakeIdle()
 	// 공격 상태 해제
 	bAttacking = false;
 
-	// 현재 공격 모션을 빈 스트링으로 설정
-	//CurrentAttackMotion = TEXT("");
+	// 현재 공격 모션을 기본값으로 설정
 	CurrentAttackMotion = EAttackMotion::Idle;
 }
 
 void AMyCharacter::InitializeAttackTable()
 {
-	
+	// 각 캐릭터 클래스에서 재정의
 }
 
 void AMyCharacter::AddKeyToInputArray(FString PressedKeyName)
 {
+	// 스택에 입력 키 쌓기
 	InputKeyArray.Emplace(PressedKeyName);
 }
 
@@ -508,35 +524,39 @@ void AMyCharacter::WhenAnyKeyClicked(FString PressedKeyName)
 void AMyCharacter::DetermineAttackMotion()
 {
 	FString InputString = TEXT("");
-	//TArray<EInputKey> KeysToDetermineAttackMotion;
-	//FString NewAttackMotion = TEXT("");
 	EAttackMotion NewAttackMotion = EAttackMotion::Idle;
+
+	// 입력 키 스택에서 하나씩 빼면서 그에 해당하는 공격 모션이 존재하는지 검사
+	// 최대한 길게 매치될 때까지 진행 후 공격 모션 결정
+	// 입력 키는 처리가 편하도록 스트링으로 치환하여 생각
+	// 왼쪽 손 : H
+	// 오른쪽 손 : J
+	// 왼쪽 발 : K
+	// 오른쪽 발 : L
 	
 	for (int32 i = InputKeyArray.Num() - 1; i >= 0; i--)
 	{
-		//KeysToDetermineAttackMotion.Insert(InputKeyArray[i], 0);
 		InputString = InputKeyArray[i] + InputString;
 
-		//if (!AttackMotionTable.Contains(FEInputKeyArray(KeysToDetermineAttackMotion)))
 		if (!AttackMotionTable.Contains(InputString))
 		{
 			break;
 		}
 
-		//if (AttackMotionTable.Contains(FEInputKeyArray(KeysToDetermineAttackMotion)))
 		if (AttackMotionTable.Contains(InputString))
 		{
-			//NewAttackMotion = AttackMotionTable[FEInputKeyArray(KeysToDetermineAttackMotion)];
 			NewAttackMotion = AttackMotionTable[InputString];
 		}
 	}
 
+	// 기존 공격 모션을 비활성화 시키고 새로운 공격 모션 활성화
 	if (AttackMotionBoolTable.Contains(CurrentAttackMotion))
 		AttackMotionBoolTable[CurrentAttackMotion] = false;
 	if (AttackMotionBoolTable.Contains(NewAttackMotion))
 		AttackMotionBoolTable[NewAttackMotion] = true;
 	CurrentAttackMotion = NewAttackMotion;
 
+	// 만약 이후 연결되는 공격 콤보가 없다면 스택 초기화
 	if (FinalAttackMotions.Contains(NewAttackMotion))
 		InputKeyArray.Empty();
 
@@ -544,28 +564,24 @@ void AMyCharacter::DetermineAttackMotion()
 
 void AMyCharacter::WhenLeftPunchKeyClicked()
 {
-	//WhenAnyKeyClicked(EInputKey::LeftPunch);
 	WhenAnyKeyClicked(TEXT("H"));
 	DetermineAttackMotion();
 }
 
 void AMyCharacter::WhenRightPunchKeyClicked()
 {
-	//WhenAnyKeyClicked(EInputKey::RightPunch);
 	WhenAnyKeyClicked(TEXT("J"));
 	DetermineAttackMotion();
 }
 
 void AMyCharacter::WhenLeftKickKeyClicked()
 {
-	//WhenAnyKeyClicked(EInputKey::LeftKick);
 	WhenAnyKeyClicked(TEXT("K"));
 	DetermineAttackMotion();
 }
 
 void AMyCharacter::WhenRightKickKeyClicked()
 {
-	//WhenAnyKeyClicked(EInputKey::RightKick);
 	WhenAnyKeyClicked(TEXT("L"));
 	DetermineAttackMotion();
 }
@@ -590,6 +606,8 @@ void AMyCharacter::InitializeHitTable()
 
 void AMyCharacter::RandomAttack()
 {
+	// 랜덤으로 4가지 공격 키 중 하나 입력
+
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dis(0, 4);
@@ -601,21 +619,5 @@ void AMyCharacter::RandomAttack()
 	case 2: WhenLeftKickKeyClicked(); break;
 	case 3: WhenRightKickKeyClicked(); break;
 	default: WhenLeftPunchKeyClicked(); break;
-	}
-}
-
-void AMyCharacter::AIStopAttack()
-{
-	if (IsBetweenAttackTimerStarted)
-	{
-		UBTTask_Attack::IsAttacking = false;
-		MakeIdle();
-		IsBetweenAttackTimerStarted = false;
-		GetWorldTimerManager().ClearTimer(BetweenAttackTimerHandle);
-	}
-	else
-	{
-		GetWorldTimerManager().SetTimer(BetweenAttackTimerHandle, this, &AMyCharacter::AIStopAttack, 0.5f, true);
-		IsBetweenAttackTimerStarted = true;
 	}
 }

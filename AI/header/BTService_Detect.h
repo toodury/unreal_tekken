@@ -18,5 +18,6 @@ public:
 	UBTService_Detect();
 
 protected:
+	// 상대 캐릭터 탐지
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

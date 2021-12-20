@@ -14,6 +14,8 @@ class TEKKEN_API AMyPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+	// 게임 시작 전 화면에서 사용할 플레이어 컨트롤러
+
 protected:
 	virtual void BeginPlay() override;
 };

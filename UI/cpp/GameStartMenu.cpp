@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameStartMenu.h"
+#include "../header/GameStartMenu.h"
 #include "Internationalization/Text.h"
 #include "Kismet/GameplayStatics.h"
-#include "RandomCharacter.h"
+#include "../../Character/header/RandomCharacter.h"
 #include "Components/CanvasPanel.h"
 
 #include <random>
@@ -40,7 +40,6 @@ void UGameStartMenu::InitializePlayerNicknameInputTextBox()
 		PlayerNicknameInputTextBox->SetHintText(FText::FromString(TEXT("닉네임은 최대 15자까지 가능합니다")));
 		PlayerNicknameInputTextBox->SetKeyboardFocus();
 		PlayerNicknameInputTextBox->OnTextChanged.AddDynamic(this, &UGameStartMenu::PlayerNicknameInputTextBoxOnChange);
-		//PlayerNicknameInputTextBox->OnTextCommitted.AddDynamic(this, &UGameStartMenu::PlayerNicknameInputTextBoxOnCommitted);
 	}
 
 	// 초기 닉네임 입력이 되지 않은 상태이기 때문에 true로 초기화
@@ -53,6 +52,7 @@ void UGameStartMenu::InitializePlayerNicknameInputTextBox()
 bool UGameStartMenu::IsNicknameValid(FString Nickname)
 {
 	// 입력으로 들어온 텍스트가 유효하지 않은 문자를 포함하고 있는지 검사
+
 	for (int32 i = 0; i < InvalidNicknameArray.Num(); i++)
 	{
 		if (Nickname.Contains(InvalidNicknameArray[i]))
@@ -78,14 +78,6 @@ void UGameStartMenu::PlayerNicknameInputTextBoxOnChange(const FText& Text)
 	DeterminePlayButtonEnabled();
 	DetermineNicknameWarningVisible();
 }
-
-//void UGameStartMenu::PlayerNicknameInputTextBoxOnCommitted(const FText& Text, ETextCommit::Type InCommitType)
-//{
-//	if (IsNicknameValid(Text.ToString()))
-//		bNicknameInvalid = false;
-//	else
-//		bNicknameInvalid = true;
-//}
 
 void UGameStartMenu::InitializeNicknameWarningText()
 {
@@ -121,15 +113,21 @@ void UGameStartMenu::InitializePlayButton()
 
 void UGameStartMenu::PlayButtonClicked()
 {
+	// 화면에 표시된 캐릭터 액터 파괴
 	CurrentDisplayedCharacter->Destroy();
+
+	// 게임 인스턴스에 플레이어가 입력한 닉네임 저장
 	if (GameInstance)
 		GameInstance->PlayerNickname = PlayerNicknameOnChange;
+
+	// Play Map 열기
 	if (GameMode)
 		GameMode->ChangeLevel(TEXT("PlayMap"));
 }
 
 void UGameStartMenu::DeterminePlayButtonEnabled()
 {
+	// 닉네임이 유효하고 캐릭터가 선택되어 있어야 Play 버튼 활성화
 	if (!bNicknameInvalid && CurrentDisplayedCharacter)
 		PlayButton->SetIsEnabled(true);
 }
@@ -236,11 +234,10 @@ void UGameStartMenu::AnyCharacterSelected(ECharacters SelectedCharacter)
 			CharacterSpawnTransform.SetLocation(FVector(294.0f, 182.0f, 98.0f));
 			CharacterSpawnTransform.SetRotation(FQuat::MakeFromEuler(FVector(0.0f, 0.0f, 180.0f)));
 		}
-		//GameMode->SpawnCharacter(SelectedCharacter, CharacterSpawnTransform);
 		GameMode->SpawnCharacter(SelectedCharacter, CharacterSpawnTransform, CurrentDisplayedCharacter);
 	}
 
-	// 플레이 버튼 활성화
+	// 플레이 버튼 활성화 여부 결정
 	DeterminePlayButtonEnabled();
 
 	// 선택된 캐릭터 버튼의 테두리를 빨간색으로, 나머지를 하얀색으로 설정

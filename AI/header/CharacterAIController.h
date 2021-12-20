@@ -15,17 +15,10 @@ class TEKKEN_API ACharacterAIController : public AAIController
 	GENERATED_BODY()
 
 public:
+	// AI 캐릭터를 조종하기 위한 컨트롤러
 		ACharacterAIController();
 
 		UBlackboardData* BB_AICharacter;
 		UBehaviorTree* BT_AICharacter;
 		static const FName Target;
-
-//		virtual void OnPossess(APawn* InPawn) override;
-//		virtual void OnUnPossess() override;
-//
-//private:
-//	void OnRepeatTimer();
-//	FTimerHandle RepeatTimerHandle;
-//	float RepeatInterval;
 };

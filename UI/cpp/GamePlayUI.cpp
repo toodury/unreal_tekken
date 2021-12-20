@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GamePlayUI.h"
+#include "../header/GamePlayUI.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -9,15 +9,16 @@ void UGamePlayUI::NativeConstruct()
 {
 	// 로컬 변수 초기화
 
+	// 게임 인스턴스
 	GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GameInstance)
 	{
-		//PlayerCharacter = Cast<AMyCharacter>(GameInstance->PlayerCharacter);
-		//ComputerCharacter = Cast<AMyCharacter>(GameInstance->ComputerCharacter);
+		// 스폰한 플레이어와 컴퓨터 캐릭터를 게임 인스턴스에서 불러오기
 		PlayerCharacter = GameInstance->PlayerCharacter;
 		ComputerCharacter = GameInstance->ComputerCharacter;
 	}
 
+	// 게임 모드
 	GameMode = Cast<AtekkenGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	// 캐릭터 체력 Progress Bar 관련 초기화
@@ -33,11 +34,11 @@ void UGamePlayUI::NativeConstruct()
 	InitializeGameCountdownText();
 
 	// 게임 진행 관련 bool 변수 초기화
-	bGameStart = false;
-	bAfterEndTimerStarted = false;
-	bGameOver = false;
-	bGoToNextLevel = false;
-	bQuitGame = false;
+	bGameStart = false;	// 게임 시작 여부
+	bAfterEndTimerStarted = false;	// 현재 세트 종료 이후 3초 타이머 시작 여부
+	bGameOver = false;	// 현재 세트 종료 여부
+	bGoToNextLevel = false;	// 다음 레벨로 가야 할지 여부
+	bQuitGame = false;			// 게임 종료 여부
 
 	// 게임 시작 대기 시간 초기화
 	InitializeCountdownBeforeGameText();
@@ -66,26 +67,26 @@ void UGamePlayUI::NativeConstruct()
 
 }*/
 
-void UGamePlayUI::Tick(FGeometry MyGeometry, float DeltaTime)
-{
-	// 두 캐릭터의 체력바 업데이트
-	UpdateHpProgressBar(PlayerCharacter, PlayerHp);
-	UpdateHpProgressBar(ComputerCharacter, ComputerHp);
-
-	// 게임 시작 전 3초 카운트다운 업데이트. 게임이 시작됐을 땐 실행 안 됨
-	if (!bGameStart)
-		UpdateCountdownBeforeGameText();
-
-	// 게임 시작 전엔 Countdown 액터의 CountdownTimer 함수에서 60초에서 시간이 줄어들지 않음. GameStart 함수에서 업데이트 시작
-	UpdateGameCountdownText();
-
-	UE_LOG(LogTemp, Log, TEXT("Tick"));
-}
+//void UGamePlayUI::Tick(FGeometry MyGeometry, float DeltaTime)
+//{
+//	// 두 캐릭터의 체력바 업데이트
+//	UpdateHpProgressBar(PlayerCharacter, PlayerHp);
+//	UpdateHpProgressBar(ComputerCharacter, ComputerHp);
+//
+//	// 게임 시작 전 3초 카운트다운 업데이트. 게임이 시작됐을 땐 실행 안 됨
+//	if (!bGameStart)
+//		UpdateCountdownBeforeGameText();
+//
+//	// 게임 시작 전엔 Countdown 액터의 CountdownTimer 함수에서 60초에서 시간이 줄어들지 않음. GameStart 함수에서 업데이트 시작
+//	UpdateGameCountdownText();
+//
+//	UE_LOG(LogTemp, Log, TEXT("Tick"));
+//}
 
 void UGamePlayUI::WhenPlayerWin()
 {
 	if (GameInstance)
-	{
+	{	
 		// 플레이어 세트 승리 수를 하나 올리고 You Win 텍스트를 띄움
 		if (!bGameOver)
 		{
@@ -139,7 +140,8 @@ void UGamePlayUI::WhenDraw()
 void UGamePlayUI::WhenGameOver()
 {
 	if (GameInstance)
-	{// 각 캐릭터의 bGameOver를 true로 설정해 더 이상 캐릭터의 체력이 달지 않도록 설정
+	{
+		// 각 캐릭터의 bGameOver를 true로 설정해 더 이상 캐릭터의 체력이 닳지 않도록 설정
 		if (GameInstance->PlayerCharacter)
 			GameInstance->PlayerCharacter->bGameOver = true;
 		if (GameInstance->ComputerCharacter)
@@ -153,6 +155,7 @@ void UGamePlayUI::WhenGameOver()
 	{
 		if (GameInstance->CountdownActor)
 		{
+			// 세트 종료 이후 3초가 지났을 때
 			if (GameInstance->CountdownActor->bGoNextGame)
 			{
 				// 게임 종료
@@ -165,14 +168,15 @@ void UGamePlayUI::WhenGameOver()
 					GameInstance->ComputerWinCnt = 0;
 					GameInstance->CurrentLevel++;
 				}
-				// 게임 다시 시작
+				// 세트 다시 시작
 				UGameplayStatics::OpenLevel(GetWorld(), TEXT("PlayMap"));
 			}
+			// 세트 종료 직후 3초 대기 시작
 			else
 			{
 				if (!bAfterEndTimerStarted)
 				{
-					// 게임 종료 이후 3초간 대기
+					// 세트 종료 이후 3초간 대기
 					GameInstance->CountdownActor->StartCountdownAfterEnd();
 					bAfterEndTimerStarted = true;
 				}
@@ -185,6 +189,7 @@ void UGamePlayUI::InitializeCharacterHpProgressBar()
 {
 	// 플레이어는 체력이 왼쪽에서 오른쪽으로 달고 컴퓨터는 반대로 달음
 	// 최초의 체력바는 100%로 차있고 색깔은 하늘색
+
 	if (PlayerHp)
 	{
 		PlayerHp->BarFillType = EProgressBarFillType::LeftToRight;
@@ -199,31 +204,6 @@ void UGamePlayUI::InitializeCharacterHpProgressBar()
 		ComputerHp->SetFillColorAndOpacity(FLinearColor(0.0f, 0.5f, 1.0f, 1.0f));
 	}
 }
-
-/*void UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar)
-{
-	int CurrentHp = Character->CurrentHp;		// 해당 캐릭터의 체력
-	if (HpProgressBar)
-	{
-		if (CurrentHp == 0)
-		{
-			// 해당 캐릭터의 체력이 0이 되면 bIsDead = true로 설정
-			// 해당 캐릭터가 이겼을 때의 함수, 게임 종료 함수 실행
-			Character->bIsDead = true;
-			if (HpProgressBar == PlayerHp)
-				WhenComputerWin();
-			else if (HpProgressBar == ComputerHp)
-				WhenPlayerWin();
-			else
-				UE_LOG(LogTemp, Error, TEXT("Hp Progress Bar is invalid"));
-			WhenGameOver();
-		}
-		// Progress Bar는 0 ~ 1 사이의 범위를 가지므로 100으로 나눔
-		HpProgressBar->SetPercent(CurrentHp / 100.0f);
-	}
-	else
-		UE_LOG(LogTemp, Error, TEXT("Hp Progress Bar is nullptr"));
-}*/
 
 float UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* HpProgressBar)
 {
@@ -241,23 +221,38 @@ float UGamePlayUI::UpdateHpProgressBar(AMyCharacter* Character, UProgressBar* Hp
 			else if (HpProgressBar == ComputerHp)
 				WhenPlayerWin();
 			else
-				UE_LOG(LogTemp, Error, TEXT("Hp Progress Bar Error"));
+				UE_LOG(LogTemp, Error, TEXT("Hp Progress Bar Not Found"));
 			WhenGameOver();
 		}
-		// Progress Bar는 0 ~ 1 사이의 범위를 가지므로 100으로 나눔
-		//HpProgressBar->SetPercent(CurrentHp / 100.0f);
 	}
+	// Progress Bar는 0 ~ 1 사이의 범위를 가지므로 100으로 나눔
 	return CurrentHp / 100.0f;
 }
 
 float UGamePlayUI::UpdatePlayerHpProgressBar()
 {
-	return UpdateHpProgressBar(GameInstance->PlayerCharacter, PlayerHp);
+	if (GameInstance)
+	{
+		return UpdateHpProgressBar(GameInstance->PlayerCharacter, PlayerHp);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
+		return 0.0f;
+	}
 }
 
 float UGamePlayUI::UpdateComputerHpProgressBar()
 {
-	return UpdateHpProgressBar(GameInstance->ComputerCharacter, ComputerHp);
+	if (GameInstance)
+	{
+		return UpdateHpProgressBar(GameInstance->ComputerCharacter, ComputerHp);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
+		return 0.0f;
+	}
 }
 
 void UGamePlayUI::InitializeNicknameText()
@@ -354,6 +349,14 @@ void UGamePlayUI::InitializeGameCountdownText()
 			if (GameCountdownText)
 				GameCountdownText->SetText(FText::FromString(FString::FromInt(Countdown)));
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Countdown Actor is nullptr"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
 	}
 }
 
@@ -365,8 +368,6 @@ FText UGamePlayUI::UpdateGameCountdownText()
 		{
 			// 시간은 Countdown 액터에서 가져옴
 			int32 Countdown = GameInstance->CountdownActor->CountdownTime;
-			//if (GameCountdownText)
-				//GameCountdownText->SetText(FText::FromString(FString::FromInt(Countdown)));
 			
 			if (Countdown == 0)
 			{
@@ -376,6 +377,10 @@ FText UGamePlayUI::UpdateGameCountdownText()
 			}
 			return FText::FromString(FString::FromInt(Countdown));
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Countdown Actor is nullptr"));
+		}
 	}
 	else
 	{
@@ -383,30 +388,6 @@ FText UGamePlayUI::UpdateGameCountdownText()
 	}
 	return FText::FromString(TEXT(""));
 }
-
-/*void UGamePlayUI::UpdateGameCountdownText()
-{
-	if (GameInstance)
-	{
-		if (GameInstance->CountdownActor)
-		{
-			// 시간은 Countdown 액터에서 가져옴
-			int8 Countdown = GameInstance->CountdownActor->CountdownTime;
-			if (GameCountdownText)
-				GameCountdownText->SetText(FText::FromString(FString::FromInt(Countdown)));
-			if (Countdown == 0)
-			{
-				// 시간이 0이 되면 남은 체력에 따라 누가 이겼는지 결정하고 게임 종료 함수 실행
-				DetermineWhoWin();
-				WhenGameOver();
-			}
-		}
-		else
-			UE_LOG(LogTemp, Error, TEXT("Game Instance->Countdown Actor is nullptr"));
-	}
-	else
-		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
-}*/
 
 void UGamePlayUI::InitializeCountdownBeforeGameText()
 {
@@ -418,16 +399,20 @@ void UGamePlayUI::InitializeCountdownBeforeGameText()
 			if (CountdownBeforeGameText)
 				CountdownBeforeGameText->SetText(FText::FromString(FString::FromInt(Countdown)));
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Countdown Actor is nullptr"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
 	}
 }
 
 void UGamePlayUI::GameStart()
 {
 	// 게임이 시작될 때 일어나야 할 일들
-
-	// 게임 시작 전 3초 시간을 재주는 텍스트는 사라지도록 함
-	//if (CountdownBeforeGameText)
-//		CountdownBeforeGameText->SetText(FText::FromString(TEXT("")));
 
 	// 사용자의 컨트롤러를 플레이어 캐릭터에게 넘겨줌
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(GameInstance->PlayerCharacter);
@@ -438,38 +423,9 @@ void UGamePlayUI::GameStart()
 	// 60초 카운트다운 시작
 	if (GameInstance)
 		GameInstance->CountdownActor->StartCountdownTimer();
-
-	//UE_LOG(LogTemp, Log, TEXT("Game Start"));
-}
-
-/*void UGamePlayUI::UpdateCountdownBeforeGameText()
-{
-	if (GameInstance)
-	{
-		if (GameInstance->CountdownActor)
-		{
-			if (GameInstance->CountdownActor->bStartGame)
-				GameStart();
-			else
-			{
-				// 게임 시작 전까지 몇 초 남았는지 가져옴
-				int8 Countdown = GameInstance->CountdownActor->CountdownBeforeStartAfterEnd;
-				if (CountdownBeforeGameText)
-				{
-					// 시간이 남았으면 시간으로, 시간이 0이 된 순간 0 대신 Go!로 설정
-					if (Countdown > 0)
-						CountdownBeforeGameText->SetText(FText::FromString(FString::FromInt(Countdown)));
-					else
-						CountdownBeforeGameText->SetText(FText::FromString(TEXT("Go!")));
-				}
-			}
-		}
-		else
-			UE_LOG(LogTemp, Error, TEXT("Game Instance->Countdown Actor is nullptr"));
-	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
-}*/
+}
 
 FText UGamePlayUI::UpdateCountdownBeforeGameText()
 {
@@ -479,6 +435,7 @@ FText UGamePlayUI::UpdateCountdownBeforeGameText()
 		{
 			if (GameInstance->CountdownActor)
 			{
+				// 게임 시작
 				if (GameInstance->CountdownActor->bStartGame)
 					GameStart();
 				else
@@ -489,16 +446,12 @@ FText UGamePlayUI::UpdateCountdownBeforeGameText()
 					if (CountdownBeforeGameText)
 					{
 						// 시간이 남았으면 시간으로, 시간이 0이 된 순간 0 대신 Go!로 설정
-						/*if (Countdown > 0)
-							CountdownBeforeGameText->SetText(FText::FromString(FString::FromInt(Countdown)));
-						else
-							CountdownBeforeGameText->SetText(FText::FromString(TEXT("Go!")));*/
+
 						if (Countdown > 0)
 							return FText::FromString(FString::FromInt(Countdown));
 						else
 							return FText::FromString(TEXT("Go!"));
 					}
-					//return FText::FromString(FString::FromInt(Countdown));
 				}
 			}
 		}
@@ -520,8 +473,10 @@ void UGamePlayUI::DetermineWhoWin()
 {
 	if (GameInstance)
 	{
+		// 남은 시간이 0이 되었을 때 실행
 		// 두 캐릭터의 현재 체력을 읽어와서 누가 이겼는지 판단하고
 		// 그에 따라 승리 함수 실행
+
 		int32 ComputerCharacterHp = GameInstance->ComputerCharacter->CurrentHp;
 		int32 PlayerCharacterHp = GameInstance->PlayerCharacter->CurrentHp;
 		if (ComputerCharacterHp > PlayerCharacterHp)
@@ -530,6 +485,10 @@ void UGamePlayUI::DetermineWhoWin()
 			WhenPlayerWin();
 		else
 			WhenDraw();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
 	}
 }
 
@@ -542,5 +501,9 @@ void UGamePlayUI::InitializeLevelText()
 		{
 			LevelText->SetText(FText::FromString(TEXT("Level") + FString::FromInt(CurrentLevel)));
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Game Instance is nullptr"));
 	}
 }

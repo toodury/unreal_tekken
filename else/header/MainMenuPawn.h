@@ -12,18 +12,8 @@ class TEKKEN_API AMainMenuPawn : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
+	
+	// 게임 시작 전 Menu Map에서 사용될 폰
+	// 오직 UI하고만 상호작용해야 하므로 이동, 회전 불가
 	AMainMenuPawn();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };

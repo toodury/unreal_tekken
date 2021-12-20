@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WoodCharacter.h"
+#include "../header/WoodCharacter.h"
 
 AWoodCharacter::AWoodCharacter()
 {
@@ -32,24 +32,18 @@ void AWoodCharacter::InitializeCharacterDetail()
 
 void AWoodCharacter::InitializeAttackTable()
 {
-	//TArray<EInputKey> AttackMotion;
-
-	//AttackMotion.Emplace(EInputKey::LeftPunch);
-	//AttackMotionTable.Emplace(FEInputKeyArray(AttackMotion), TEXT("Attack"));
-
 	AttackMotionTable.Emplace(TEXT("H"), EAttackMotion::Wood__RightHandAttack);
 
 	AttackMotionBoolTable.Emplace(EAttackMotion::Wood__RightHandAttack, false);
 
 	FinalAttackMotions.Emplace(EAttackMotion::Wood__RightHandAttack);
 
-	AttackMotionDamageTable.Emplace(EAttackMotion::Wood__RightHandAttack, 5.0f);
+	AttackMotionDamageTable.Emplace(EAttackMotion::Wood__RightHandAttack, 5);
 }
 
 void AWoodCharacter::RandomAttack()
 {
 	WhenLeftPunchKeyClicked();
-	UE_LOG(LogTemp, Log, TEXT("Wood Attack"));
 }
 
 void AWoodCharacter::InitializeHitTable()
@@ -58,6 +52,5 @@ void AWoodCharacter::InitializeHitTable()
 
 	AttackMotionHitPositionTable.Emplace(EAttackMotion::Wood__RightHandAttack, EHitPosition::LeftArm);
 
-	AttackMotionCollisionComponentTable.Emplace(EAttackMotion::Idle, nullptr);
 	AttackMotionCollisionComponentTable.Emplace(EAttackMotion::Wood__RightHandAttack, RightHandCollision);
 }

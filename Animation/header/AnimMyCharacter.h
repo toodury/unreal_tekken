@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "MyCharacter.h"
+#include "../../Character/header/MyCharacter.h"
 #include "AnimMyCharacter.generated.h"
 
 /**
@@ -17,6 +17,7 @@ class TEKKEN_API UAnimMyCharacter : public UAnimInstance
 	
 public:
 
+	// 캐릭터들의 애니메이션 블루프린트 스테이트 머신에서 사용할 bool 변수를 설정하는 클래스
 	UAnimMyCharacter();
 
 	virtual void NativeBeginPlay() override;
@@ -47,13 +48,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Locomotion")
 		EMoveDirection PreviousMovingDirection;
 
-	//// 캐릭터의 현재 공격 모션을 가진 map
-	//UPROPERTY(BlueprintReadOnly, Category = "Attack")
-	//	TMap<FString, bool> AttackMotionBoolTable;
-
 	// 캐릭터의 현재 공격 모션을 리턴하는 함수
+	// 애니메이션 블루프린트 스테이트 머신에서 애니메이션 전환에 이용하기 위해 순수 함수로 선언
 	UFUNCTION(BlueprintCallable, Category = "Attack", meta = (BlueprintThreadSafe))
-		//bool GetAttackMotionBoolTable(FString AttackMotion) const;
 		bool GetAttackMotionBoolTable(EAttackMotion AttackMotion) const;
 
 	// 캐릭터가 공격 당했을 때 true가 되는 bool 변수
@@ -61,6 +58,7 @@ public:
 		bool bIsHit;
 
 	// 캐릭터가 공격당한 부위를 리턴하는 함수
+	// 애니메이션 블루프린트 스테이트 머신에서 애니메이션 전환에 이용하기 위해 순수 함수로 선언
 	UFUNCTION(BlueprintCallable, Category = "Hit", meta = (BlueprintThreadSafe))
 		bool GetHitPositionBoolTable(EHitPosition HitPosition) const;
 

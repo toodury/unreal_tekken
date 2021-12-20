@@ -25,9 +25,10 @@ public:
 	// AI 캐릭터가 공격하고 있는지 저장한 bool 변수
 		static bool IsAttacking;
 
-	// AI 캐릭터가 움직이지 않을시 Attack 노드에서 벗어날 수 있게 하기 위한 타이머
+	// AI 캐릭터가 랜덤 공격 이후 0.5초 기다리기 위해 있는 타이머 핸들
 		FTimerHandle StopAttackTimerHandle;
-	// 2초 동안 Attack 노드를 벗어나지 못할 시 호출되는 함수
+
+	// AI 캐릭터가 랜덤 공격 이후 0.5초 후에 실행되는 함수. 비헤이비어 트리의 루트 노드로 돌아감
 		void StopAttack();
 
 };

@@ -16,6 +16,7 @@ class TEKKEN_API AWoodCharacter : public AMyCharacter
 
 public:
 
+	// 나무 캐릭터
 	AWoodCharacter();
 
 	// Character Detail
